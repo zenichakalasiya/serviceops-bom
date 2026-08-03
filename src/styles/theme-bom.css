@@ -1,0 +1,43 @@
+/* ==========================================================================
+   Re-branding template — for the upcoming BOM module.
+
+   Components never reference a primitive colour directly; they only use the
+   SEMANTIC names defined in tokens.css. So a re-brand is this file and nothing
+   else: no component CSS changes, no .tsx changes.
+
+   Two ways to apply it:
+
+     a) GLOBAL — replace the semantic block in tokens.css with new values.
+     b) SCOPED — keep ServiceOps blue as the default and wrap the BOM module in
+        <div data-theme="bom">. Everything inside picks up the overrides below.
+
+   Currently INERT: the rules only take effect on [data-theme="bom"], which
+   nothing sets yet. Drop the real palette in when the BOM tokens land, then
+   add the attribute to the module's root element.
+
+   Import it after tokens.css (see index.css).
+   ========================================================================== */
+
+[data-theme="bom"] {
+  /* ---- replace these five with the BOM brand ramp ---------------------- */
+  --color-primary:          var(--color-blue-500);   /* main accent, links, active tab */
+  --color-primary-strong:   var(--color-blue-700);   /* pressed / active rail marker */
+  --color-primary-selected: var(--color-blue-100);   /* selected row, active pill */
+  --color-primary-subtle:   var(--color-blue-50);    /* id badge fill */
+  --color-primary-chip:     var(--color-blue-25);    /* row-icon chip fill */
+
+  /* ---- and only if BOM diverges on neutrals or status ------------------- */
+  /* --color-surface:      …;  --color-surface-sunk: …;  --color-line: …;   */
+  /* --color-ok: …;  --color-warn: …;  --color-danger: …;                    */
+}
+
+/*
+  Checklist when the BOM tokens arrive
+  ------------------------------------
+  1. Add the new primitives to the PRIMITIVES block in tokens.css
+     (keep the ServiceOps ones — both palettes can coexist).
+  2. Point the five semantic names above at them.
+  3. Set data-theme="bom" on the BOM module root.
+  4. `npm run check` — the ServiceOps pixel baseline must be UNCHANGED, which
+     proves the re-brand is scoped and has not leaked into this module.
+*/

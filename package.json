@@ -1,0 +1,44 @@
+{
+  "name": "serviceops-modules",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview",
+
+    "//": "---- capture pipeline: live product -> measured values -> src ----",
+    "capture": "node tools/capture.cjs",
+    "capture:icons": "node tools/icons.cjs",
+    "capture:rows": "node tools/rows.cjs",
+    "tokens": "node tools/tokens.cjs",
+    "fonts": "node tools/get-inter.cjs",
+    "gen": "node tools/gen-assets.mjs",
+    "refresh": "npm run capture && npm run capture:icons && npm run capture:rows && npm run tokens && npm run gen",
+
+    "//quality": "---- both suites drive the built app on :5190 ----",
+    "validate": "node tools/with-preview.mjs tools/validate.cjs",
+    "test:ui": "node tools/with-preview.mjs tools/interact.cjs",
+    "check": "npm run build && npm run test:ui && npm run validate"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.4",
+    "oxlint": "^1.75.0",
+    "pixelmatch": "^7.2.0",
+    "playwright": "^1.62.1",
+    "pngjs": "^7.0.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~6.0.2",
+    "vite": "^8.2.0"
+  }
+}

@@ -1,0 +1,134 @@
+﻿/* ==========================================================================
+   Listing page.
+
+   Measured from tools/out/listing/ â€” header band 54px, search band 48px,
+   header row at y=172, row pitch 54px. Semantic tokens only.
+   ========================================================================== */
+
+/* ---- product top bar (listing pages only) --------------------------------- */
+.topbar{height:56px;flex:0 0 56px;display:flex;align-items:center;padding:0 24px;
+  background:var(--color-surface);border-bottom:1px solid var(--color-line)}
+.logo{font-size:26px;font-weight:700;letter-spacing:-.5px;line-height:28.6px;
+  color:var(--color-ink-900)}
+.logo .data{color:var(--color-primary)}
+.topactions{margin-left:auto;display:flex;align-items:center;gap:8px}
+.topbtn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  border-radius:var(--radius-xs);color:var(--color-fg)}
+.topbtn:hover{background:var(--color-surface-sunk)}
+.topbtn.primary{background:var(--color-primary);color:var(--color-fg-invert)}
+.topbtn.primary:hover{background:var(--color-primary-strong)}
+.topbtn svg{width:18px;height:18px;flex:0 0 18px}
+.avatar-btn{width:32px;height:32px;border-radius:var(--radius-xs);background:var(--color-primary);
+  color:var(--color-fg-invert);font-size:11px;font-weight:600;display:flex;
+  align-items:center;justify-content:center}
+
+.listing{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--color-surface)}
+
+/* ---- page header: title Â· view switcher Â· toolbar ------------------------ */
+.pagehead{height:54px;flex:0 0 54px;display:flex;align-items:center;padding:12px 24px;
+  background:var(--color-surface)}
+.pagehead h1{font-size:16px;font-weight:600;color:var(--color-fg);line-height:24px}
+.viewswitch{display:flex;align-items:center;gap:4px;margin-left:12px;padding:2px 4px;
+  border-radius:var(--radius-xs);font-size:14px;font-weight:500;color:var(--color-fg);
+  line-height:21px}
+.viewswitch:hover{background:var(--color-surface-sunk)}
+.viewswitch svg{width:16px;height:16px;flex:0 0 16px;color:var(--color-fg);
+  transition:transform .15s}
+.viewswitch[aria-expanded="true"] svg{transform:rotate(180deg)}
+
+.pagehead .tools{margin-left:auto;display:flex;align-items:center;gap:4px;position:relative}
+.toolbtn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+  border-radius:var(--radius-xs);color:var(--color-fg-gray)}
+.toolbtn:hover{background:var(--color-surface-sunk)}
+.toolbtn.on{background:var(--color-primary-selected);color:var(--color-primary)}
+/* Extracted glyphs carry no width/height â€” without this they fill the button. */
+.toolbtn svg{width:16px;height:16px;flex:0 0 16px}
+
+/* ---- search band ---------------------------------------------------------- */
+.searchband{padding:0 24px 12px;background:var(--color-surface)}
+.searchfield{display:flex;align-items:center;gap:8px;height:38px;padding:0 12px;
+  border:1px solid var(--color-line-2);border-radius:var(--radius-sm);
+  background:var(--color-surface)}
+.searchfield:focus-within{border-color:var(--color-primary)}
+.searchfield input{flex:1;order:1;border:0;outline:0;padding:0;background:none;
+  font-size:13px;color:var(--color-fg);line-height:19.5px}
+.searchfield input::placeholder{color:var(--color-fg-dim)}
+.searchfield svg{order:2;width:16px;height:16px;flex:0 0 16px;color:var(--color-fg-dim)}
+.searchfield .clear{order:2;display:flex;color:var(--color-fg-dim)}
+.searchfield .clear:hover{color:var(--color-fg)}
+
+/* ---- grid ------------------------------------------------------------------ */
+.gridwrap{flex:1;overflow:auto;min-height:0;border-top:1px solid var(--color-line)}
+/* table-layout:fixed is what makes the <colgroup> widths authoritative. Without
+   it the browser auto-sizes to content, the columns bunch up on the left and
+   the grid leaves ~300px of dead space on the right. */
+table.datagrid{width:100%;border-collapse:collapse;table-layout:fixed}
+table.datagrid th{position:sticky;top:0;z-index:1;background:var(--color-surface);
+  text-align:left;font-size:12px;font-weight:600;letter-spacing:.6px;color:var(--color-fg);
+  padding:12px 16px;border-bottom:1px solid var(--color-line);white-space:nowrap}
+table.datagrid th.sortable{cursor:pointer;user-select:none}
+table.datagrid th.sortable:hover{color:var(--color-primary)}
+table.datagrid th .sort{display:inline-flex;align-items:center;gap:6px}
+table.datagrid th .arrow{opacity:0;font-size:10px;line-height:1}
+table.datagrid th.sorted .arrow{opacity:1;color:var(--color-primary)}
+table.datagrid td{padding:12px 16px;font-size:12px;color:var(--color-fg);
+  border-bottom:1px solid var(--color-line);vertical-align:middle;line-height:18px}
+table.datagrid tbody tr:hover{background:var(--color-surface-sunk)}
+table.datagrid tbody tr.selected{background:var(--color-primary-selected)}
+table.datagrid tbody tr.clickable{cursor:pointer}
+table.datagrid tbody tr.clickable:focus-visible{outline:2px solid var(--color-primary);
+  outline-offset:-2px}
+table.datagrid td.name{font-size:16px;font-weight:500;color:var(--color-fg);line-height:24px;
+  max-width:440px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+table.datagrid td.trunc{max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.idlink{display:inline-block;background:var(--color-primary-subtle);color:var(--color-primary);
+  border-radius:var(--radius-xs);padding:2px 8px;font-size:12px;font-weight:600;
+  white-space:nowrap}
+.idlink:hover{background:var(--color-primary-selected)}
+.empty{color:var(--color-fg-dim)}
+
+.gridempty{padding:64px 24px;text-align:center;color:var(--color-fg-dim);font-size:13px}
+
+/* ---- footer ---------------------------------------------------------------- */
+.gridfoot{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:16px 24px;
+  font-size:12px;color:var(--color-fg-slate);border-top:1px solid var(--color-line);
+  background:var(--color-surface)}
+.gridfoot b{font-weight:600;color:var(--color-fg)}
+.gridfoot .right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.gridfoot select{height:30px;border:1px solid var(--color-line-2);border-radius:var(--radius-xs);
+  background:var(--color-surface);font-size:12px;color:var(--color-fg);padding:0 6px;
+  font-family:inherit}
+.pagebtn{min-width:30px;height:30px;padding:0 8px;border-radius:var(--radius-xs);
+  border:1px solid var(--color-line-2);background:var(--color-surface);font-size:12px;
+  color:var(--color-fg);display:inline-flex;align-items:center;justify-content:center}
+.pagebtn:hover:not(:disabled){background:var(--color-surface-sunk)}
+.pagebtn.active{background:var(--color-primary-selected);border-color:var(--color-primary);
+  color:var(--color-primary);font-weight:600}
+.pagebtn:disabled{opacity:.4;cursor:default}
+.pagebtn svg{width:14px;height:14px}
+
+/* ---- popovers (view switcher, column chooser, overflow menu) -------------- */
+.popover{position:absolute;top:36px;right:0;min-width:220px;background:var(--color-surface);
+  border:1px solid var(--color-line);border-radius:var(--radius-md);
+  box-shadow:var(--shadow-menu);padding:4px;z-index:60;max-height:420px;overflow:auto}
+.popover.left{right:auto;left:0}
+.popover button,.popover label{display:flex;align-items:center;gap:10px;width:100%;
+  padding:8px 12px;border-radius:var(--radius-sm);font-size:13px;color:var(--color-fg);
+  text-align:left;white-space:nowrap;cursor:pointer}
+.popover button:hover,.popover label:hover{background:var(--color-surface-sunk)}
+.popover button.active{color:var(--color-primary);font-weight:500}
+.popover svg{width:16px;height:16px;flex:0 0 16px;color:var(--color-fg-gray)}
+.popover .grouplabel{padding:8px 12px 4px;font-size:11px;font-weight:600;letter-spacing:.5px;
+  text-transform:uppercase;color:var(--color-fg-muted)}
+
+/* ---- selection action bar -------------------------------------------------- */
+.selbar{display:flex;align-items:center;gap:12px;margin:0 24px 12px;padding:8px 12px;
+  background:var(--color-primary-selected);border:1px solid var(--color-primary);
+  border-radius:var(--radius-sm);font-size:12px;color:var(--color-fg)}
+.selbar b{font-weight:600}
+.selbar .acts{margin-left:auto;display:flex;gap:8px}
+.selbar .acts button{display:flex;align-items:center;gap:6px;height:28px;padding:0 10px;
+  border-radius:var(--radius-xs);background:var(--color-surface);
+  border:1px solid var(--color-line-2);font-size:12px;font-weight:500;color:var(--color-fg)}
+.selbar .acts button:hover{background:var(--color-surface-sunk)}
+.selbar .acts svg{width:14px;height:14px}

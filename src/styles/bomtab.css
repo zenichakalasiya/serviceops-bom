@@ -1,0 +1,289 @@
+/* ==========================================================================
+   BOM tab · drawers · components page.
+   Semantic tokens only — no new colour, type, spacing or radius values.
+   ========================================================================== */
+
+/* ---- 1 · type switcher ----------------------------------------------------- */
+.typerow{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.typeswitch{display:inline-flex;padding:3px;background:var(--color-surface-sunk);
+  border:1px solid var(--color-line-2);border-radius:var(--radius-md)}
+.typeswitch button{display:flex;align-items:center;gap:6px;height:34px;padding:0 16px;
+  border-radius:var(--radius-sm);font-size:13px;font-weight:600;color:var(--color-fg-slate);
+  white-space:nowrap}
+.typeswitch button:hover:not(.active){color:var(--color-fg);background:var(--color-surface)}
+.typeswitch button.active{background:var(--color-primary);color:var(--color-fg-invert)}
+.typeswitch button:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px}
+.typeswitch .n{font-weight:600;opacity:.85}
+.typecaption{font-size:12px;color:var(--color-fg-slate);margin:-8px 0 16px;line-height:18px}
+
+/* ---- 2 · scope row --------------------------------------------------------- */
+/* the CTA sits immediately beside the product control it acts on, not pushed
+   to the far edge where it reads as unrelated page furniture */
+.scoperow{display:flex;align-items:flex-end;gap:12px;margin-bottom:20px}
+.btn-primary.tall{height:38px;padding:0 16px;font-size:13px}
+.btn-primary.tall svg{width:16px;height:16px;flex:0 0 16px}
+.field-label{font-size:11px;color:var(--color-fg-muted);line-height:16.5px;margin-bottom:4px}
+.selectbtn{display:flex;align-items:center;gap:10px;height:38px;min-width:320px;padding:0 12px;
+  border:1px solid var(--color-line-2);border-radius:var(--radius-sm);
+  background:var(--color-surface);font-size:13px;color:var(--color-fg);text-align:left}
+.selectbtn:hover{background:var(--color-surface-sunk)}
+.selectbtn:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px}
+.selectbtn .chev{margin-left:auto;display:flex;color:var(--color-fg-slate)}
+.selectbtn svg{width:16px;height:16px;flex:0 0 16px}
+.optrow{display:flex;align-items:center;gap:8px;width:100%}
+.optrow .ver{color:var(--color-fg-muted)}
+.optrow .badge{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;
+  min-width:20px;height:18px;padding:0 6px;border-radius:9999px;background:var(--color-surface-tag);
+  font-size:11px;font-weight:600;color:var(--color-fg-slate)}
+.optrow .badge.hot{background:rgb(254 243 199);color:rgb(146 64 14)}
+
+.btn-secondary{display:flex;align-items:center;gap:8px;height:38px;padding:0 14px;
+  border:1px solid var(--color-line-2);border-radius:var(--radius-sm);
+  background:var(--color-surface);font-size:13px;font-weight:500;color:var(--color-fg)}
+.btn-secondary:hover{background:var(--color-surface-sunk)}
+.btn-secondary:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px}
+.btn-secondary:disabled{opacity:.45;cursor:default}
+.btn-secondary svg{width:16px;height:16px;flex:0 0 16px}
+.btn-outline{border-color:var(--color-primary);color:var(--color-primary)}
+.btn-outline:hover{background:var(--color-primary-selected)}
+
+/* ---- agent banner, compressed to one line + disclosure --------------------- */
+.agentbanner{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;
+  background:rgb(240 253 244);border:1px solid rgb(187 247 208);border-radius:var(--radius-md);
+  font-size:12px;color:var(--color-ok-onsurface);line-height:18px;margin-bottom:20px}
+.agentbanner svg{width:14px;height:14px;flex:0 0 14px;margin-top:2px}
+.agentbanner .oneline{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.agentbanner.expanded .oneline{white-space:normal;overflow:visible}
+.agentbanner button{flex:0 0 auto;font-size:12px;font-weight:500;color:var(--color-ok-onsurface);
+  text-decoration:underline}
+
+/* ---- 7 · version history --------------------------------------------------- */
+.sectionhead{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.sectionhead h3{font-size:15px;font-weight:600;color:var(--color-fg)}
+.sectioncount{display:inline-flex;align-items:center;justify-content:center;min-width:20px;
+  height:18px;padding:0 6px;border-radius:9999px;background:var(--color-surface-tag);
+  font-size:11px;font-weight:600;color:var(--color-fg-slate)}
+.sectionhead .right{margin-left:auto}
+.vercards{display:flex;flex-direction:column;gap:10px}
+.vercard{display:flex;align-items:center;gap:14px;padding:14px 16px;
+  background:var(--color-surface);border:1px solid var(--color-line);
+  border-radius:var(--radius-lg)}
+/* The current version carries the weight: an accent edge, a tinted ground and a
+   stronger label. Superseded versions stay quiet so the timeline reads at a
+   glance instead of three identical rows. */
+.vercard.current{border-color:var(--color-primary);background:rgb(235 245 255 / .45);
+  box-shadow:inset 3px 0 0 0 var(--color-primary)}
+.vercard.current .vlabel,.vercard.current .vstamp{color:var(--color-fg)}
+.vercard:not(.current){background:var(--color-surface)}
+.vercard:not(.current) .vlabel,.vercard:not(.current) .vstamp{color:var(--color-fg-slate)}
+.vercard:not(.current):hover{border-color:var(--color-line-2);box-shadow:var(--shadow-card)}
+.chip-past{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:9999px;
+  background:var(--color-surface-tag);color:var(--color-fg-slate);font-size:11px;font-weight:500}
+
+/* row actions: same treatment as the header's Edit icon button */
+.vcacts{margin-left:auto;display:flex;align-items:center;gap:8px}
+.viewlink{font-size:13px;font-weight:500;color:var(--color-primary);white-space:nowrap;
+  padding:0 4px}
+.viewlink:hover{text-decoration:underline}
+.viewlink:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px;
+  border-radius:var(--radius-xs)}
+
+/* instant tooltip — the native title attribute waits ~1s before appearing */
+.tip{position:relative}
+.tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;
+  transform:translateX(-50%);padding:4px 8px;border-radius:var(--radius-xs);
+  background:rgb(17 24 39);color:#fff;font-size:11px;font-weight:500;white-space:nowrap;
+  opacity:0;pointer-events:none;z-index:70}
+.tip:hover::after,.tip:focus-visible::after{opacity:1}
+.vercard:hover{box-shadow:var(--shadow-card)}
+.vercard.picked{border-color:var(--color-primary);background:var(--color-primary-selected)}
+.vercard .vcmain{min-width:0;flex:1}
+.vercard .titleline{display:flex;align-items:center;gap:8px}
+.vercard .vlabel{font-size:14px;font-weight:600;color:var(--color-fg)}
+.vercard .vstamp{font-size:13px;font-weight:600;color:var(--color-fg)}
+.chip-current{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:9999px;
+  background:var(--color-primary-subtle);color:var(--color-primary);font-size:11px;font-weight:600}
+.vercard .delta{display:flex;align-items:center;gap:6px;font-size:12px;
+  color:var(--color-fg-muted);margin-top:3px}
+.vercard .delta .sep{color:var(--color-line-2)}
+.vercard .scans{font-size:12px;font-weight:500;color:var(--color-primary)}
+.vercard .scans:hover{text-decoration:underline}
+.vercard .chips{display:flex;align-items:center;gap:8px}
+.chip-meta{display:inline-flex;align-items:center;height:22px;padding:0 10px;border-radius:9999px;
+  background:var(--color-surface-tag);color:var(--color-fg-slate);font-size:11px;font-weight:500;
+  white-space:nowrap}
+.chip-signed{background:var(--color-ok-surface);color:var(--color-ok-onsurface)}
+
+/* ---- product BOM metadata, top of the BOM panel ----------------------------- */
+.metagrid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px 24px}
+.metagrid .k{font-size:11px;color:var(--color-fg-muted);line-height:16.5px}
+.metagrid .v{font-size:13px;color:var(--color-fg);line-height:19.5px;margin-top:2px;
+  word-break:break-word}
+.metagrid .v.signed{color:var(--color-ok-text);font-weight:500}
+.metagrid .v a{color:var(--color-primary);text-decoration:none}
+.metagrid .v a:hover{text-decoration:underline}
+
+/* the endpoint's record title is a hostname — monospace, like the grid cell */
+.rectitle.mono-title{font-family:var(--font-mono);font-size:16px}
+
+/* "Ingest BOM" sits in the page-header toolbar as a labelled primary button */
+.btn-primary.sm{height:30px;padding:0 12px;font-size:12px;gap:6px}
+.btn-primary.sm svg{width:14px;height:14px;flex:0 0 14px}
+
+/* names what a section is scoped to, when it is not the endpoint */
+.sectionscope{font-size:11px;color:var(--color-fg-dim);margin:-4px 0 10px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* scan-status notes reused inside the sidebar's field rows */
+.field .val .note{font-size:12px}
+.field .val .note.progress{color:var(--color-warn)}
+.field .val .note.ok{color:var(--color-fg-slate)}
+.field .val .signed{color:var(--color-ok-text);font-weight:500}
+
+/* ---- 6 · BOM Info rail section ---------------------------------------------- */
+.eprail .scopecaption{font-size:11px;color:var(--color-fg-muted);margin:-8px 0 12px}
+.skel{display:block;height:19.5px;border-radius:var(--radius-xs);
+  background:linear-gradient(90deg,var(--color-surface-sunk) 25%,var(--color-line) 37%,
+    var(--color-surface-sunk) 63%);background-size:400% 100%;animation:shimmer 1.2s ease infinite}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:0 0}}
+.eprail .signed{color:var(--color-ok-text);font-weight:500}
+.nobom{font-size:13px;color:var(--color-fg-dim)}
+
+/* ---- drawers ----------------------------------------------------------------- */
+.scrim{position:fixed;inset:0;background:rgb(17 24 39 / .35)}
+.drawer{position:fixed;top:0;right:0;bottom:0;max-width:96vw;background:var(--color-surface);
+  border-left:1px solid var(--color-line);box-shadow:var(--shadow-menu);
+  display:flex;flex-direction:column;outline:0}
+/* a stacked parent stays visible but recedes */
+.drawer.behind{filter:brightness(.97)}
+.drawer-head{flex:0 0 auto;display:flex;align-items:flex-start;gap:12px;padding:16px 20px;
+  border-bottom:1px solid var(--color-line)}
+.drawer-head h2{font-size:15px;font-weight:600;color:var(--color-fg);line-height:22.5px}
+.drawer-sub{font-family:var(--font-mono);font-size:12px;color:var(--color-fg-muted);margin-top:2px}
+.drawer-head .iconbtn{margin-left:auto}
+.drawer-body{flex:1;overflow:auto;padding:16px 20px}
+.drawer-foot{flex:0 0 auto;display:flex;justify-content:flex-end;gap:8px;padding:12px 20px;
+  border-top:1px solid var(--color-line);background:var(--color-surface)}
+
+.drawer-toolbar{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.drawer-toolbar .searchfield{flex:1}
+
+/* Fixed layout + explicit widths so cells truncate on one line instead of
+   wrapping — at 760px the drawer cannot fit "Payments Web", "/opt/payments"
+   and "agent · discovered" untruncated, and wrapping made rows 3 lines tall. */
+table.pathtable{width:100%;border-collapse:collapse;table-layout:fixed}
+table.pathtable th{text-align:left;font-size:11px;font-weight:600;letter-spacing:.5px;
+  color:var(--color-fg-muted);text-transform:uppercase;padding:0 10px 8px;
+  border-bottom:1px solid var(--color-line);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+table.pathtable td{padding:12px 10px;font-size:13px;color:var(--color-fg);
+  border-bottom:1px solid var(--color-line);vertical-align:middle;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* chip and count share one line; the cell truncates like every other */
+.statuscell{display:inline-flex;align-items:center;gap:6px;min-width:0;max-width:100%}
+.statuscell .chip{flex:0 0 auto}
+.statuscell .pmeta{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+table.pathtable tr.excluded td{opacity:.55}
+table.pathtable tr.excluded .pname{text-decoration:line-through}
+table.pathtable tr.fresh{background:var(--color-primary-selected)}
+.pname{font-weight:600}
+.psource{color:var(--color-fg-muted);font-size:12px}
+.pmeta{color:var(--color-fg-muted);font-size:12px}
+.chip-pending{background:var(--color-surface-tag);color:var(--color-fg-slate)}
+.ghostx{width:26px;height:26px;border-radius:var(--radius-xs);display:flex;align-items:center;
+  justify-content:center;color:var(--color-fg-dim)}
+.ghostx:hover{background:var(--color-surface-sunk);color:var(--color-danger-strong)}
+.ghostx svg{width:14px;height:14px}
+
+.pathtable td.nowrap,.pathtable th.nowrap{white-space:nowrap}
+.rowacts{display:flex;gap:2px}
+.ghosticon{width:28px;height:28px;border-radius:var(--radius-xs);display:flex;align-items:center;
+  justify-content:center;color:var(--color-fg-slate)}
+.ghosticon:hover{background:var(--color-surface-sunk);color:var(--color-fg)}
+.ghosticon.danger:hover{background:var(--color-danger-surface);color:var(--color-danger-strong)}
+.ghosticon:focus-visible{outline:2px solid var(--color-primary);outline-offset:1px}
+.ghosticon svg{width:15px;height:15px}
+
+/* ---- exclude-paths panel ----------------------------------------------------- */
+.excludepanel{margin-top:24px;border:1px solid var(--color-line);border-radius:var(--radius-lg);
+  overflow:hidden}
+.excludepanel > header{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;
+  background:var(--color-surface-sunk);border-bottom:1px solid var(--color-line)}
+.excludepanel h4{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;
+  color:var(--color-fg-muted);margin-bottom:6px}
+.excludepanel .help{font-size:12px;color:var(--color-fg-slate);line-height:18px;margin:0}
+.excludepanel .countpill{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+  min-width:22px;height:20px;padding:0 7px;border-radius:9999px;background:var(--color-surface);
+  border:1px solid var(--color-line-2);font-size:11px;font-weight:600;color:var(--color-fg-slate)}
+.chipwell{display:flex;flex-wrap:wrap;gap:8px;padding:14px 16px}
+.wellempty{font-size:12px;color:var(--color-fg-dim)}
+.excludepanel .addrow{display:flex;gap:8px;padding:0 16px 6px}
+.excludepanel .addrow .textinput{flex:1;min-width:0}
+.excludepanel .hint,.excludepanel .err{padding:0 16px 14px;margin:0;font-size:11px}
+.excludepanel .hint{color:var(--color-fg-muted)}
+.excludepanel .err{color:var(--color-danger-strong)}
+
+.excludeblock{margin-top:24px;padding-top:20px;border-top:1px solid var(--color-line)}
+.excludeblock h4{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;
+  color:var(--color-fg-muted);margin-bottom:6px}
+.excludeblock .help{font-size:12px;color:var(--color-fg-slate);line-height:18px;margin-bottom:12px}
+.chipwrap{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.patternchip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 8px;
+  border:1px solid var(--color-line-2);border-radius:var(--radius-sm);
+  background:var(--color-surface);font-family:var(--font-mono);font-size:12px;color:var(--color-fg)}
+.patternchip button{display:flex;color:var(--color-fg-dim)}
+.patternchip button:hover{color:var(--color-danger-strong)}
+.patternchip svg{width:12px;height:12px}
+.textinput{height:34px;padding:0 10px;border:1px solid var(--color-line-2);
+  border-radius:var(--radius-sm);background:var(--color-surface);font-size:13px;
+  color:var(--color-fg);font-family:inherit;min-width:260px}
+.textinput:focus{outline:0;border-color:var(--color-primary)}
+.textinput.mono{font-family:var(--font-mono);font-size:12px}
+.textinput.invalid{border-color:var(--color-danger-strong)}
+.fieldrow{margin-bottom:16px}
+.fieldrow label{display:block;font-size:12px;font-weight:500;color:var(--color-fg);margin-bottom:6px}
+.fieldrow .hint{font-size:11px;color:var(--color-fg-muted);margin-top:6px}
+.fieldrow .err{font-size:11px;color:var(--color-danger-strong);margin-top:6px}
+.fieldrow .textinput{width:100%;min-width:0}
+.req{color:var(--color-danger-strong)}
+
+table.scantable{width:100%;border-collapse:collapse}
+table.scantable th{text-align:left;font-size:11px;font-weight:600;letter-spacing:.5px;
+  text-transform:uppercase;color:var(--color-fg-muted);padding:0 10px 8px;
+  border-bottom:1px solid var(--color-line)}
+table.scantable td{padding:10px;font-size:12px;color:var(--color-fg);
+  border-bottom:1px solid var(--color-line)}
+
+/* ---- 8 · components page ------------------------------------------------------ */
+.crumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-fg-muted);
+  margin-bottom:6px}
+.crumb button{color:var(--color-primary);font-size:12px}
+.crumb button:hover{text-decoration:underline}
+.crumb .sep{color:var(--color-line-2)}
+.pagehead.tall{height:auto;flex:0 0 auto;align-items:flex-start;flex-direction:column;
+  padding:14px 24px 12px}
+.pagehead.tall .titleline{display:flex;align-items:center;gap:12px;width:100%}
+.pagehead.tall h1{font-size:16px;font-weight:600}
+.pagehead.tall .subtitle{font-size:12px;color:var(--color-fg-slate);margin-top:2px}
+.pagehead.tall .tools{margin-left:auto}
+.filterbar{display:flex;align-items:center;gap:8px;padding:0 24px 12px;flex-wrap:wrap}
+.filterbar .searchfield{flex:1;min-width:260px}
+.filterselect{height:38px;padding:0 8px;border:1px solid var(--color-line-2);
+  border-radius:var(--radius-sm);background:var(--color-surface);font-size:13px;
+  color:var(--color-fg);font-family:inherit}
+.splitbtn{display:flex}
+.splitbtn .btn-secondary:first-child{border-top-right-radius:0;border-bottom-right-radius:0}
+.splitbtn .btn-secondary:last-child{border-top-left-radius:0;border-bottom-left-radius:0;
+  border-left:0;padding:0 8px}
+table.datagrid tbody tr:nth-child(even){background:rgb(249 250 251 / .6)}
+table.datagrid tbody tr:nth-child(even):hover{background:var(--color-surface-sunk)}
+.purl{font-family:var(--font-mono);font-size:12px;color:var(--color-primary);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;cursor:pointer}
+.purl:hover{text-decoration:underline}
+.compname{font-family:var(--font-mono);font-size:12px;color:var(--color-fg)}
+.origin{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:var(--radius-xs);
+  font-size:11px;font-weight:500;white-space:nowrap}
+.origin.prop{background:var(--color-primary-subtle);color:var(--color-primary)}
+.origin.oss{background:var(--color-ok-surface);color:var(--color-ok-onsurface)}
+.origin.third{background:rgb(254 243 199);color:rgb(146 64 14)}
+.gridfoot .note{color:var(--color-fg-muted)}

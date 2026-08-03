@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+/* 1 · primitives + semantic tokens (see tools/out/TOKENS.md for provenance) */
+@import "./styles/tokens.css";
+
+/* 2 · per-module brand overrides — inert until a [data-theme] is set */
+@import "./styles/theme-bom.css";
+
+/* 3 · component styles — reference semantic tokens only */
+@import "./styles/components.css";
+@import "./styles/listing.css";
+@import "./styles/bom.css";
+@import "./styles/bomtab.css";
+@import "./styles/compare.css";

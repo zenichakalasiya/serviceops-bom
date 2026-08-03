@@ -1,0 +1,106 @@
+/* ==========================================================================
+   BOM module.
+
+   Reuses the listing and detail shells; this file adds only what is new:
+   the rail flyout, the inventory summary strip, and the endpoint header.
+   Semantic tokens only — no new colour, type or spacing values.
+   ========================================================================== */
+
+/* ---- rail flyout ----------------------------------------------------------
+   Matches the product's own flyout from the capture: 210px, white, 10px radius,
+   1px #DFE5ED border, menu rows at 13px with 12px/8px padding.               */
+.railitem{position:relative;width:100%;flex:0 0 40px}
+.railflyout{position:absolute;left:100%;top:0;z-index:80;width:210px;
+  background:var(--color-surface);border:1px solid var(--color-line-2);
+  border-radius:var(--radius-lg);box-shadow:var(--shadow-menu);padding:4px 0}
+.railflyout-head{display:flex;align-items:center;gap:8px;padding:8px 12px 6px;
+  font-size:13px;font-weight:600;color:var(--color-fg)}
+.railbadge{display:inline-flex;align-items:center;height:16px;padding:0 6px;
+  border-radius:9999px;background:var(--color-primary);color:var(--color-fg-invert);
+  font-size:9px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.railflyout button{display:flex;align-items:center;gap:10px;width:100%;height:auto;
+  padding:8px 12px;font-size:13px;color:var(--color-fg);text-align:left;
+  white-space:nowrap;justify-content:flex-start}
+.railflyout button:hover{background:var(--color-surface-sunk)}
+.railflyout button.active{background:var(--color-primary-selected);color:var(--color-primary);
+  font-weight:500}
+.railflyout button.active::before{content:none}
+.railflyout svg{width:16px;height:16px;flex:0 0 16px;color:var(--color-fg-gray)}
+.railflyout button.active svg{color:var(--color-primary)}
+
+/* ---- inventory: segmented scope tabs + summary strip ---------------------- */
+.segmented{display:inline-flex;padding:2px;background:var(--color-surface-sunk);
+  border:1px solid var(--color-line-2);border-radius:var(--radius-sm);margin-left:16px}
+.segmented button{display:flex;align-items:center;gap:6px;height:28px;padding:0 12px;
+  border-radius:var(--radius-xs);font-size:13px;font-weight:500;color:var(--color-fg-slate);
+  white-space:nowrap}
+.segmented button:hover:not(.active){color:var(--color-fg)}
+.segmented button.active{background:var(--color-primary);color:var(--color-fg-invert)}
+
+/* ---- inventory cell treatments -------------------------------------------- */
+.mono{font-family:var(--font-mono);font-size:12px}
+.host{display:flex;align-items:center;gap:8px}
+.host .name{font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--color-fg)}
+.ipcell{font-family:var(--font-mono);font-size:12px;color:var(--color-fg-muted)}
+
+.chip{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;
+  border-radius:9999px;font-size:12px;font-weight:500;white-space:nowrap}
+.chip svg{width:12px;height:12px;flex:0 0 12px}
+.chip.ok{background:var(--color-ok-surface);color:var(--color-ok-onsurface)}
+.chip.warn{background:rgb(254 243 199);color:rgb(146 64 14)}
+.chip.fail{background:var(--color-danger-surface);color:var(--color-danger-onsurface)}
+.chip.count{background:var(--color-surface-tag);color:var(--color-fg-slate);font-weight:600}
+
+.findings{font-weight:600}
+.findings.hot{color:var(--color-warn)}
+.findings.none{color:var(--color-fg-dim);font-weight:400}
+.dash{color:var(--color-fg-dim)}
+
+/* ---- endpoint detail header ------------------------------------------------ */
+.ephead{flex:0 0 auto;background:var(--color-surface);
+  border-bottom:1px solid var(--color-line);padding:16px 24px}
+.ephead .titlerow{display:flex;align-items:center;gap:12px}
+.backbtn{width:28px;height:28px;flex:0 0 28px;display:flex;align-items:center;
+  justify-content:center;border:1px solid var(--color-line-2);border-radius:var(--radius-xs);
+  background:var(--color-surface);color:var(--color-fg-slate)}
+.backbtn:hover{background:var(--color-surface-sunk)}
+.backbtn svg{width:14px;height:14px}
+.ephead .epid{font-size:13px;font-weight:600;color:var(--color-primary)}
+.ephead h1{font-size:18px;font-weight:600;color:var(--color-fg);line-height:27px;
+  font-family:var(--font-mono)}
+.ephead .stamp{font-size:12px;color:var(--color-fg-muted)}
+/* no margin-left:auto here — it belongs to the one call site that wants the
+   button pushed to the edge, not to every primary button in the app */
+.btn-primary{display:flex;align-items:center;gap:8px;height:32px;
+  padding:0 16px;border-radius:var(--radius-xs);background:var(--color-primary);
+  color:var(--color-fg-invert);font-size:13px;font-weight:500}
+.btn-primary:hover{background:var(--color-primary-strong)}
+.btn-primary svg{width:14px;height:14px}
+
+.fieldstrip{display:flex;gap:48px;margin-top:16px;flex-wrap:wrap}
+.fieldstrip .k{font-size:11px;color:var(--color-fg-muted);line-height:16.5px}
+.fieldstrip .v{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;
+  color:var(--color-fg);line-height:19.5px;margin-top:2px}
+
+/* ---- endpoint right rail ---------------------------------------------------- */
+.eprail{flex:0 0 300px;background:var(--color-surface);
+  border-left:1px solid var(--color-line);overflow:auto;padding:16px 20px 24px}
+.eprail h3{font-size:14px;font-weight:600;color:var(--color-primary);margin-bottom:12px}
+.eprail h3 + .eprow{margin-top:0}
+.eprail .group + .group{margin-top:24px}
+.eprow{margin-bottom:14px}
+.eprow .k{font-size:11px;color:var(--color-fg-muted);line-height:16.5px}
+.eprow .v{font-size:13px;color:var(--color-fg);line-height:19.5px;margin-top:2px;
+  word-break:break-word}
+.eprow .v a{color:var(--color-primary);text-decoration:none}
+.eprow .v a:hover{text-decoration:underline}
+.eprow .note{font-size:12px}
+.eprow .note.progress{color:var(--color-warn)}
+.eprow .note.ok{color:var(--color-fg-slate)}
+.eprow .v .sub{color:var(--color-fg-muted)}
+
+/* the BOM tab is deliberately empty until its contents are specified */
+.panel-placeholder{display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:8px;padding:96px 24px;color:var(--color-fg-dim);
+  font-size:13px;text-align:center}
+.panel-placeholder svg{width:28px;height:28px;color:var(--color-line-2)}
