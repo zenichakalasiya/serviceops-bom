@@ -17,9 +17,22 @@
    real Inter; without these faces everything falls back to Segoe UI and every
    string renders ~6% narrow ("Overview" 59.5px instead of 63.5px), shifting
    every downstream box. Largest single source of visual drift. */
-@font-face{font-family:Inter;font-style:normal;font-weight:400;font-display:block;src:url("../fonts/Inter-400.woff2") format("woff2")}
-@font-face{font-family:Inter;font-style:normal;font-weight:500;font-display:block;src:url("../fonts/Inter-500.woff2") format("woff2")}
-@font-face{font-family:Inter;font-style:normal;font-weight:600;font-display:block;src:url("../fonts/Inter-600.woff2") format("woff2")}
+/* ONE declaration, not three.
+   Google serves Inter as a single variable font (fvar/gvar/avar present), so
+   the three files fetched for 400/500/600 were byte-identical — 94 KB of
+   duplicate. Worse, declaring three fixed weights caps the axis: 300 snapped
+   to 400 and 700 snapped to 600, silently. `font-weight: 100 900` exposes the
+   real axis, so any weight renders at that weight.
+   `font-display: block` is deliberate: this UI is validated against a pixel
+   baseline, and swapping from a fallback would reflow every measured box. */
+@font-face{
+  font-family:Inter;
+  font-style:normal;
+  font-weight:100 900;
+  font-display:block;
+  src:url("../fonts/Inter-var.woff2") format("woff2-variations"),
+      url("../fonts/Inter-var.woff2") format("woff2");
+}
 
 @theme {
   /* ======================================================================

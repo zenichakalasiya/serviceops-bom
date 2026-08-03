@@ -21,7 +21,8 @@
     "//quality": "---- both suites drive the built app on :5190 ----",
     "validate": "node tools/with-preview.mjs tools/validate.cjs",
     "test:ui": "node tools/with-preview.mjs tools/interact.cjs",
-    "check": "npm run build && npm run test:ui && npm run validate"
+    "test:fonts": "node tools/with-preview.mjs tools/fontcheck.cjs",
+    "check": "npm run build && npm run test:fonts && npm run test:ui && npm run validate"
   },
   "dependencies": {
     "react": "^19.2.8",

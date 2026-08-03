@@ -468,6 +468,17 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   check((await page.locator('.vercard .iconbtn.tip').first().getAttribute('data-tip')) === 'Download BOM',
     'icon buttons need an instant tooltip label');
 
+  // download offers both formats rather than silently picking one
+  await page.locator('.vercard .iconbtn.tip').first().click();
+  await page.waitForTimeout(300);
+  const formats = await page.locator('.popover button').allInnerTexts();
+  check(formats.length === 2
+    && formats.some((t) => t.includes('CycloneDX'))
+    && formats.some((t) => t.includes('SPDX')),
+    `download menu should offer CycloneDX and SPDX, got ${JSON.stringify(formats)}`);
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(250);
+
   // compare is available without selecting anything
   const compare = page.locator('.btn-outline', { hasText: 'Compare versions' });
   check(await compare.isEnabled(), 'Compare versions should be enabled by default');
