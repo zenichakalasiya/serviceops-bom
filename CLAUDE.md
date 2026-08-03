@@ -5,8 +5,8 @@ Pixel-accurate, interactive rebuilds of Motadata ServiceOps modules, built from
 See [README.md](./README.md) for the method, scripts and known traps.
 
 ## Deployment
-Repo: (none yet)
-Live URL: (none yet)
+Repo: https://github.com/zenichakalasiya/serviceops-bom
+Live URL: https://zenichakalasiya.github.io/serviceops-bom/
 
 Deployed from `main` by `.github/workflows/deploy.yml` (Vite build → GitHub
 Pages). The Vite `base` in `vite.config.ts` **must** match the repo name, or
