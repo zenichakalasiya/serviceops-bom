@@ -71,7 +71,6 @@ export function EndpointProperties({ productId, type }: { productId: string; typ
           <span key={c}>{i > 0 && ' · '}
             <a href="#" onClick={(e) => { e.preventDefault(); toast(`Open ${c}`); }}>{c}</a>
           </span>))}</>],
-        ['Resource throttle', <span>{meta.throttle}</span>],
       ]
     : [];
 

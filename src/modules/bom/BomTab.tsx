@@ -122,8 +122,8 @@ export default function BomTab({
           {/* states the rule once, so the per-interval counts below make sense
               without the user having to infer it */}
           <p className="scopehelp versionshelp">
-            Scans run on a schedule. A new version appears only when one finds a
-            change — the rest leave the BOM as it is.
+            A version appears only when a scan finds a change — the line between
+            two versions shows how many scans ran in that gap.
           </p>
 
           {/* A version only exists because a scan found a difference. The scan

@@ -16,7 +16,9 @@
 .typeswitch .n{font-weight:600;opacity:.85}
 /* helper under the product control — one glanceable line, not a paragraph */
 .scopehelp{font-size:12px;color:var(--color-fg-muted);margin:-12px 0 20px;line-height:18px}
-.versionshelp{margin:-4px 0 14px}
+/* the section head carries 12px below it; pull back 8 so the description sits
+   4px under its title rather than reading as a separate block */
+.versionshelp{margin:-8px 0 14px}
 
 /* ---- 2 · scope row --------------------------------------------------------- */
 /* the CTA sits immediately beside the product control it acts on, not pushed
@@ -122,7 +124,9 @@
   border:1px solid var(--color-line-2)}
 .scaninterval .txt{min-width:0}
 .scaninterval .txt b{font-weight:600;color:var(--color-fg-slate)}
-.scaninterval .go{margin-left:auto;font-weight:500;color:var(--color-primary);opacity:0;
+/* sits immediately after the sentence, not pushed to the far right where it
+   loses its connection to the line it acts on */
+.scaninterval .go{font-weight:500;color:var(--color-primary);opacity:0;
   transition:opacity .12s}
 .scaninterval:hover .go,.scaninterval:focus-visible .go{opacity:1}
 .scaninterval:hover .node{border-color:var(--color-primary);background:var(--color-primary)}

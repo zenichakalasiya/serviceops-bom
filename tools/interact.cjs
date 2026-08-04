@@ -372,8 +372,10 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
     'the BOM Info rail panel should be removed');
   check(await page.locator('.siderail button').count() === 2, 'rail should have 2 panels');
   const sideText = await page.locator('.side').innerText();
-  check(sideText.includes('Resource throttle') && sideText.includes('CMDB link'),
+  check(sideText.includes('CMDB link') && sideText.includes('Format'),
     'BOM fields missing from the side panel');
+  check(!sideText.includes('Resource throttle'),
+    'Resource throttle should be removed from BOM Info');
 
   // BOM Info is its own section, and sits above Other Info
   const sectionTitles = await page.locator('.side .section-head h3').allInnerTexts();
@@ -605,8 +607,27 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
 
   // the versions section explains why some scans produce no version
   const vHelp = await page.locator('.versionshelp').innerText();
-  check(/only when one finds a change/i.test(vHelp),
+  check(/only when a scan finds a change/i.test(vHelp),
     `the versions helper should explain the rule, got "${vHelp}"`);
+
+  // the description sits tight under its heading, not as a separate block
+  const headGap = await page.evaluate(() => {
+    // the versions heading specifically, not whichever .sectionhead comes first
+    const h = [...document.querySelectorAll('.pane .sectionhead')]
+      .find((el) => /versions$/.test(el.querySelector('h3')?.textContent?.trim() ?? ''));
+    const p = document.querySelector('.versionshelp');
+    return Math.round(p.getBoundingClientRect().top - h.getBoundingClientRect().bottom);
+  });
+  check(headGap >= 0 && headGap <= 6, `title-to-description gap should be ~4px, got ${headGap}px`);
+
+  // "View" follows the sentence rather than sitting at the far right edge
+  const goGap = await page.evaluate(() => {
+    const row = document.querySelector('.scaninterval');
+    const txt = row.querySelector('.txt').getBoundingClientRect();
+    const go = row.querySelector('.go').getBoundingClientRect();
+    return Math.round(go.left - txt.right);
+  });
+  check(goGap < 30, `"View" should sit beside the line, got ${goGap}px away`);
 
   /* The interval sits on a dotted rail joining the cards, vertically centred in
      the gap — so its top and bottom padding must match. */
