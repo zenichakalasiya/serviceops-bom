@@ -53,9 +53,6 @@ export default function BomTab({
           ))}
         </div>
       </div>
-      <p className="typecaption">
-        {product.name} — one bill of materials per type: software, cryptographic, AI/ML.
-      </p>
 
       {/* ---- product & scope -------------------------------------------- */}
       <div className="sectionhead">
@@ -94,6 +91,10 @@ export default function BomTab({
           <Svg name="settings" />Manage scan paths
         </button>
       </div>
+      {/* one glanceable line; the full explanation lives in the drawer */}
+      <p className="scopehelp">
+        Each path is scanned into that product&apos;s own SBOM.
+      </p>
 
       {/* ---- versions ---------------------------------------------------- */}
       {count === 0 ? (
@@ -147,11 +148,15 @@ export default function BomTab({
                     onClick={() => setDownloadFor(v.id)}>
                     <Svg name="download" />
                   </button>
-                  <button className="iconbtn tip" data-tip="Re-scan components"
-                    aria-label={`Re-scan ${v.label}`}
-                    onClick={() => toast(`Re-scan components — ${v.label}`)}>
-                    <Svg name="refresh-cw" />
-                  </button>
+                  {/* only the current version can be re-scanned — a superseded
+                      BOM is a historical record, re-scanning it is meaningless */}
+                  {v.current && (
+                    <button className="iconbtn tip" data-tip="Re-scan components"
+                      aria-label={`Re-scan ${v.label}`}
+                      onClick={() => toast(`Re-scan components — ${v.label}`)}>
+                      <Svg name="refresh-cw" />
+                    </button>
+                  )}
                   <button className="viewlink" onClick={() => onOpenComponents(v.id)}>
                     {ctaLabel[type]} · {count}
                   </button>

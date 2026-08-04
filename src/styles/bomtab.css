@@ -4,7 +4,7 @@
    ========================================================================== */
 
 /* ---- 1 · type switcher ----------------------------------------------------- */
-.typerow{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.typerow{display:flex;align-items:center;gap:16px;margin-bottom:20px}
 .typeswitch{display:inline-flex;padding:3px;background:var(--color-surface-sunk);
   border:1px solid var(--color-line-2);border-radius:var(--radius-md)}
 .typeswitch button{display:flex;align-items:center;gap:6px;height:34px;padding:0 16px;
@@ -14,7 +14,8 @@
 .typeswitch button.active{background:var(--color-primary);color:var(--color-fg-invert)}
 .typeswitch button:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px}
 .typeswitch .n{font-weight:600;opacity:.85}
-.typecaption{font-size:12px;color:var(--color-fg-slate);margin:-8px 0 16px;line-height:18px}
+/* helper under the product control — one glanceable line, not a paragraph */
+.scopehelp{font-size:12px;color:var(--color-fg-muted);margin:-12px 0 20px;line-height:18px}
 
 /* ---- 2 · scope row --------------------------------------------------------- */
 /* the CTA sits immediately beside the product control it acts on, not pushed
@@ -68,11 +69,10 @@
 .vercard{display:flex;align-items:center;gap:14px;padding:14px 16px;
   background:var(--color-surface);border:1px solid var(--color-line);
   border-radius:var(--radius-lg)}
-/* The current version carries the weight: an accent edge, a tinted ground and a
-   stronger label. Superseded versions stay quiet so the timeline reads at a
-   glance instead of three identical rows. */
-.vercard.current{border-color:var(--color-primary);background:rgb(235 245 255 / .45);
-  box-shadow:inset 3px 0 0 0 var(--color-primary)}
+/* The current version is only *slightly* lifted: a faint tint and a softened
+   brand border. No accent bar, no heavy outline — it needs to read as "this
+   one" at a glance, not shout over the two beneath it. */
+.vercard.current{border-color:rgb(61 139 208 / .4);background:rgb(235 245 255 / .3)}
 .vercard.current .vlabel,.vercard.current .vstamp{color:var(--color-fg)}
 .vercard:not(.current){background:var(--color-surface)}
 .vercard:not(.current) .vlabel,.vercard:not(.current) .vstamp{color:var(--color-fg-slate)}
@@ -107,23 +107,18 @@
 
 /* The interval between two versions: what ran, and what it found. Reads as a
    timeline connector rather than a property of either card. */
-.scaninterval{display:flex;align-items:center;gap:10px;width:100%;padding:8px 16px 8px 0;
-  position:relative;text-align:left;color:var(--color-fg-muted);font-size:12px}
-.scaninterval::before{content:"";position:absolute;left:23px;top:0;bottom:0;width:1px;
-  border-left:1px dashed var(--color-line-2)}
-.scaninterval .node{position:relative;z-index:1;flex:0 0 8px;width:8px;height:8px;
-  margin-left:20px;border-radius:9999px;background:var(--color-surface);
-  border:1px solid var(--color-line-2)}
-.scaninterval .txt{min-width:0}
+/* centred between the two cards it describes, so it reads as the gap rather
+   than as something hanging off the left edge of either card */
+.scaninterval{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  padding:10px 0;color:var(--color-fg-muted);font-size:12px;text-align:center}
+.scaninterval .node{flex:0 0 6px;width:6px;height:6px;border-radius:9999px;
+  background:var(--color-line-2)}
 .scaninterval .txt b{font-weight:600;color:var(--color-fg-slate)}
-.scaninterval .go{margin-left:auto;font-weight:500;color:var(--color-primary);opacity:0;
-  transition:opacity .12s}
+.scaninterval .go{font-weight:500;color:var(--color-primary);opacity:0;transition:opacity .12s}
 .scaninterval:hover .go,.scaninterval:focus-visible .go{opacity:1}
-.scaninterval:hover .txt b,.scaninterval:hover .txt{color:var(--color-fg-slate)}
+.scaninterval:hover .node{background:var(--color-primary)}
 .scaninterval:focus-visible{outline:2px solid var(--color-primary);outline-offset:-2px;
   border-radius:var(--radius-sm)}
-/* the last interval terminates the timeline */
-.vercards > div:last-child .scaninterval::before{bottom:50%}
 
 .outcome.made{color:var(--color-ok-onsurface);font-weight:500}
 .vercard .scans:hover{text-decoration:underline}

@@ -435,9 +435,7 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   await page.waitForTimeout(400);
 
   /* ---- BOM tab surfaces -------------------------------------------------- */
-  // caption sits below the switcher, and the section is type-aware
-  check(await page.locator('.typerow + .typecaption').count() === 1,
-    'the caption should sit below the type switcher');
+  // the section is named for the selected BOM type
   /* Two .sectionhead blocks now exist ("Product & scope" and the versions
      one), so this must target the versions heading rather than relying on
      there being exactly one — a bare locator fails Playwright strict mode. */
@@ -472,8 +470,13 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
     'superseded versions should read differently from the current one');
   check(await page.locator('.vercard .viewlink').count() === 3,
     '"View components" should be a text link on every card');
-  check(await page.locator('.vercard .vcacts .iconbtn.tip').count() === 6,
-    'each card needs download + re-scan icon buttons with instant tooltips');
+  // every card can be downloaded; only the current one can be re-scanned
+  check(await page.locator('.vercard .iconbtn.tip[data-tip="Download BOM"]').count() === 3,
+    'every version should offer download');
+  check(await page.locator('.vercard .iconbtn.tip[data-tip="Re-scan components"]').count() === 1,
+    're-scan should appear on the current version only');
+  check(await page.locator('.vercard.current .iconbtn.tip[data-tip="Re-scan components"]').count() === 1,
+    'the re-scan button should be on the current card');
   check((await page.locator('.vercard .iconbtn.tip').first().getAttribute('data-tip')) === 'Download BOM',
     'icon buttons need an instant tooltip label');
 
@@ -577,6 +580,23 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
     [...document.querySelectorAll('.pane .sectionhead h3')].map((h) => h.textContent.trim()));
   check(paneHeadings[0] === 'Product & scope',
     `the scope row needs a "Product & scope" heading above it — headings: ${JSON.stringify(paneHeadings)}`);
+
+  // the long type caption is gone; a short helper sits under the product control
+  check(await page.locator('.typecaption').count() === 0,
+    'the one-liner under the BOM type tabs should be removed');
+  const help = await page.locator('.scopehelp').innerText();
+  check(help.split(/\s+/).length <= 9,
+    `the product helper should be one glanceable line, got "${help}"`);
+
+  // the scan interval is centred between the cards it describes
+  const centred = await page.evaluate(() => {
+    const el = document.querySelector('.scaninterval');
+    const box = el.getBoundingClientRect();
+    const inner = el.querySelector('.txt').getBoundingClientRect();
+    // the text's centre should sit near the row's centre, not at its left edge
+    return Math.abs((inner.left + inner.width / 2) - (box.left + box.width / 2));
+  });
+  check(centred < 60, `scan interval text is not centred (off by ${Math.round(centred)}px)`);
 
   // type switcher keeps its selection when the product changes (spec §2)
   await page.locator('.typeswitch button', { hasText: 'CBOM' }).click();
