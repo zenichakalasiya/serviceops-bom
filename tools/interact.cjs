@@ -501,8 +501,13 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   check(!!btnBox && !!menuBox && Math.abs(menuBox.y - (btnBox.y + btnBox.height)) < 40,
     'the menu should open directly under its trigger');
 
-  check(/components/.test(await page.locator('.dlmenu-sum').innerText()),
-    'the menu should summarise what is being downloaded');
+  // the menu carries a title naming the artefact and a qualifying description
+  const dlTitle = await page.locator('.dlmenu-head h3').innerText();
+  check(/SBOM/.test(dlTitle) && /v3/.test(dlTitle) && /OS \/ base platform/.test(dlTitle),
+    `menu title should name type, version and product — got "${dlTitle}"`);
+  const dlSub = await page.locator('.dlmenu-head p').innerText();
+  check(/components/.test(dlSub) && /generated/.test(dlSub),
+    `menu description should qualify the artefact — got "${dlSub}"`);
   const radios = await page.locator('.dlmenu .radiorow').allInnerTexts();
   check(radios.length === 2
     && radios.some((t) => t.includes('CycloneDX'))
@@ -593,10 +598,15 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   check(await page.locator('.typecaption').count() === 0,
     'the one-liner under the BOM type tabs should be removed');
   // the helper must say something specific about the selected product
-  const help = await page.locator('.scopehelp').innerText();
+  const help = await page.locator('.scopehelp').first().innerText();
   check(help.split(/\s+/).length <= 14, `the product helper should stay one line, got "${help}"`);
   check(/rolls up here|Scanned at/.test(help),
     `the helper should describe the selected product's scope, got "${help}"`);
+
+  // the versions section explains why some scans produce no version
+  const vHelp = await page.locator('.versionshelp').innerText();
+  check(/only when one finds a change/i.test(vHelp),
+    `the versions helper should explain the rule, got "${vHelp}"`);
 
   /* The interval sits on a dotted rail joining the cards, vertically centred in
      the gap — so its top and bottom padding must match. */
@@ -689,7 +699,9 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   check(await page.locator('.dlmenu').count() === 1, 'export menu did not open');
   check(await page.locator('.dlmenu .rgroup-legend').count() === 0,
     'the "what to export" group should be gone â€” the selection decides it');
-  let sum = await page.locator('.dlmenu-sum').innerText();
+  check(/Export components/.test(await page.locator('.dlmenu-head h3').innerText()),
+    'the export menu needs a title too');
+  let sum = await page.locator('.dlmenu-head p').innerText();
   check(/all 15 components/i.test(sum), `with nothing selected it should export everything, got "${sum}"`);
   await page.keyboard.press('Escape');
   await page.waitForTimeout(300);
@@ -699,7 +711,7 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   await page.waitForTimeout(250);
   await page.locator('.drawer-actions .btn-primary', { hasText: 'Export' }).click();
   await page.waitForTimeout(400);
-  sum = await page.locator('.dlmenu-sum').innerText();
+  sum = await page.locator('.dlmenu-head p').innerText();
   check(/1 selected component/i.test(sum), `with a row ticked it should export just that, got "${sum}"`);
   await page.keyboard.press('Escape');
   await page.waitForTimeout(300);

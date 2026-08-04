@@ -25,13 +25,15 @@ export const BOM_FORMATS: DownloadFormat[] = [
  * visible rather than something you have to know.
  */
 export default function DownloadMenu({
-  open, onClose, onDownload, summary, formats = BOM_FORMATS, align = 'right',
+  open, onClose, onDownload, title, subtitle, formats = BOM_FORMATS, align = 'right',
 }: {
   open: boolean;
   onClose: () => void;
   onDownload: (format: DownloadFormat) => void;
-  /** e.g. "Exporting 3 selected components" */
-  summary: string;
+  /** names the artefact, e.g. "Download SBOM v3 — Payments Web" */
+  title: string;
+  /** qualifies it, e.g. "187 components · generated Jun 16, 2026" */
+  subtitle: string;
   formats?: DownloadFormat[];
   align?: 'left' | 'right';
 }) {
@@ -60,7 +62,10 @@ export default function DownloadMenu({
   return (
     <div className={'dlmenu' + (align === 'left' ? ' left' : '')} ref={panel} role="dialog"
       aria-label="Export format">
-      <div className="dlmenu-sum">{summary}</div>
+      <div className="dlmenu-head">
+        <h3>{title}</h3>
+        <p>{subtitle}</p>
+      </div>
 
       <fieldset className="radiogroup" aria-label="Format">
         {formats.map((f) => (

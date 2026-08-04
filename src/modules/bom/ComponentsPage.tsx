@@ -132,9 +132,10 @@ export default function ComponentsPage({
             </button>
             <DownloadMenu
               open={exportOpen} onClose={() => setExportOpen(false)}
-              summary={selected.size
-                ? `Exporting ${selected.size} selected component${selected.size === 1 ? '' : 's'}`
-                : `Exporting all ${total} components`}
+              title={`Export components — ${label(product)}`}
+              subtitle={`${type} ${versionId} · ` + (selected.size
+                ? `${selected.size} selected component${selected.size === 1 ? '' : 's'}`
+                : `all ${total} components`)}
               onDownload={(f) => {
                 toast(`Export ${selected.size || total} components — ${f.label}`);
                 setExportOpen(false);

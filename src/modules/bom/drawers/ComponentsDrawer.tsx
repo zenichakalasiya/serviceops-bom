@@ -78,9 +78,10 @@ export default function ComponentsDrawer({
             {/* the selection decides the scope, so the menu only asks format */}
             <DownloadMenu
               open={exportOpen} onClose={() => setExportOpen(false)}
-              summary={selected.size
-                ? `Exporting ${selected.size} selected component${selected.size === 1 ? '' : 's'}`
-                : `Exporting all ${components.length} components`}
+              title={`Export components — ${label(product)}`}
+              subtitle={`${type} ${versionId} · ` + (selected.size
+                ? `${selected.size} selected component${selected.size === 1 ? '' : 's'}`
+                : `all ${components.length} components`)}
               onDownload={(f) => {
                 toast(`Export ${selected.size || components.length} components — ${f.label}`);
                 setExportOpen(false);

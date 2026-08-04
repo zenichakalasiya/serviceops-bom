@@ -100,8 +100,9 @@
   background:var(--color-surface);border:1px solid var(--color-line);
   border-radius:var(--radius-md);box-shadow:var(--shadow-menu);padding:12px}
 .dlmenu.left{right:auto;left:0}
-.dlmenu-sum{font-size:12px;color:var(--color-fg-slate);margin-bottom:10px;
-  padding-bottom:10px;border-bottom:1px solid var(--color-line)}
+.dlmenu-head{margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--color-line)}
+.dlmenu-head h3{font-size:13px;font-weight:600;color:var(--color-fg);line-height:19.5px}
+.dlmenu-head p{margin:3px 0 0;font-size:11px;color:var(--color-fg-muted);line-height:16.5px}
 .dlmenu .radiogroup{border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
 .dlmenu .radiorow{padding:9px 10px}
 .dlmenu-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}

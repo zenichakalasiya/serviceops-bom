@@ -90,7 +90,7 @@ export default function BomTab({
           </div>
         </div>
 
-        <button className="btn-secondary tall" onClick={onManagePaths}>
+        <button className="btn-secondary btn-outline tall" onClick={onManagePaths}>
           <Svg name="settings" />Manage scan paths
         </button>
       </div>
@@ -119,6 +119,12 @@ export default function BomTab({
               </button>
             </div>
           </div>
+          {/* states the rule once, so the per-interval counts below make sense
+              without the user having to infer it */}
+          <p className="scopehelp versionshelp">
+            Scans run on a schedule. A new version appears only when one finds a
+            change — the rest leave the BOM as it is.
+          </p>
 
           {/* A version only exists because a scan found a difference. The scan
               runs therefore belong to the INTERVAL between two versions, not to
@@ -156,7 +162,9 @@ export default function BomTab({
                     </button>
                     <DownloadMenu
                       open={downloadFor === v.id} onClose={() => setDownloadFor(null)}
-                      summary={`Downloading ${type} ${v.label} — ${meta?.components ?? count} components`}
+                      title={`Download ${type} ${v.label} — ${label(product)}`}
+                      subtitle={`${meta?.components ?? count} components · generated `
+                        + `${v.generated}${v.current ? ' · current version' : ' · superseded'}`}
                       onDownload={(f) => {
                         toast(`Download ${type} ${v.label} — ${f.label}`);
                         setDownloadFor(null);
