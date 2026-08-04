@@ -6,6 +6,7 @@ import type { BomType } from '../../data/bomTab';
 import { useToast } from '../../lib/toast';
 import ScanHistory from './drawers/ScanHistory';
 import CompareVersions from './CompareVersions';
+import DownloadDialog from './DownloadDialog';
 
 /**
  * BOM tab body.
@@ -134,25 +135,13 @@ export default function BomTab({
                 {/* icon actions use the header's icon-button treatment, with an
                     instant tooltip — the native title attribute has a ~1s delay */}
                 <div className="vcacts">
-                  {/* two formats are offered, so this opens a menu rather than
-                      firing one of them and hiding the other */}
-                  <div style={{ position: 'relative' }}>
-                    <button className="iconbtn tip" data-tip="Download BOM"
-                      aria-label={`Download ${v.label}`} aria-haspopup="menu"
-                      aria-expanded={downloadFor === v.id}
-                      onClick={() => setDownloadFor(downloadFor === v.id ? null : v.id)}>
-                      <Svg name="download" />
-                    </button>
-                    <Popover open={downloadFor === v.id} onClose={() => setDownloadFor(null)}>
-                      <div className="grouplabel">Download {v.label}</div>
-                      {['CycloneDX 1.6', 'SPDX 2.3'].map((fmt) => (
-                        <button key={fmt} role="menuitem"
-                          onClick={() => { setDownloadFor(null); toast(`Download ${v.label} — ${fmt}`); }}>
-                          <Svg name="download" />{fmt}
-                        </button>
-                      ))}
-                    </Popover>
-                  </div>
+                  {/* opens the format dialog — the pick and the commit are
+                      separate because SPDX is a conversion, not the native form */}
+                  <button className="iconbtn tip" data-tip="Download BOM"
+                    aria-label={`Download ${v.label}`} aria-haspopup="dialog"
+                    onClick={() => setDownloadFor(v.id)}>
+                    <Svg name="download" />
+                  </button>
                   <button className="iconbtn tip" data-tip="Re-scan components"
                     aria-label={`Re-scan ${v.label}`}
                     onClick={() => toast(`Re-scan components — ${v.label}`)}>
@@ -169,6 +158,17 @@ export default function BomTab({
       )}
 
       <ScanHistory versionId={historyFor} onClose={() => setHistoryFor(null)} />
+
+      <DownloadDialog
+        open={!!downloadFor}
+        title="Download BOM"
+        subtitle={downloadFor ? `${downloadFor} · ${label(product)} · ${type}` : undefined}
+        onClose={() => setDownloadFor(null)}
+        onDownload={(f) => {
+          toast(`Download ${downloadFor} — ${f.label}`);
+          setDownloadFor(null);
+        }}
+      />
 
       <CompareVersions
         open={compareOpen} onClose={() => setCompareOpen(false)}

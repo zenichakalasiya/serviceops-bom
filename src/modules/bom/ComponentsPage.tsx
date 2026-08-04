@@ -5,6 +5,7 @@ import Pagination from '../../components/listing/Pagination';
 import Popover from '../../components/listing/Popover';
 import Svg from '../../components/Svg';
 import ComponentDetail from './drawers/ComponentDetail';
+import DownloadDialog from './DownloadDialog';
 import { endpoint } from '../../data/bom';
 import { bomMeta, components, componentsFooterNote, label, products } from '../../data/bomTab';
 import type { BomType, Component, Origin } from '../../data/bomTab';
@@ -123,24 +124,13 @@ export default function ComponentsPage({
               {label(product)} · {type} {versionId} · {meta?.format ?? 'CycloneDX 1.6'}
             </div>
           </div>
-          <div className="tools" style={{ position: 'relative' }}>
-            <div className="splitbtn">
-              <button className="btn-secondary" onClick={() => toast('Export CycloneDX')}>
-                <Svg name="download" />Export
-              </button>
-              <button className="btn-secondary" title="Export format" aria-haspopup="menu"
-                aria-expanded={exportOpen} onClick={() => setExportOpen(!exportOpen)}>
-                <Svg name="chevron-down" />
-              </button>
-            </div>
-            <Popover open={exportOpen} onClose={() => setExportOpen(false)}>
-              {['CycloneDX 1.6', 'SPDX 2.3'].map((fmt) => (
-                <button key={fmt} role="menuitem"
-                  onClick={() => { setExportOpen(false); toast(`Export ${fmt}`); }}>
-                  <Svg name="download" />{fmt}
-                </button>
-              ))}
-            </Popover>
+          <div className="tools">
+            {/* same format dialog as the version cards, so export behaves the
+                same wherever it is reached from */}
+            <button className="btn-secondary" aria-haspopup="dialog"
+              onClick={() => setExportOpen(true)}>
+              <Svg name="download" />Export
+            </button>
           </div>
         </div>
       </div>
@@ -204,6 +194,14 @@ export default function ComponentsPage({
       )}
 
       <ComponentDetail component={detail} onClose={() => setDetail(null)} />
+
+      <DownloadDialog
+        open={exportOpen}
+        title="Export components"
+        subtitle={`${label(product)} · ${type} ${versionId} · ${sorted.length} rows`}
+        onClose={() => setExportOpen(false)}
+        onDownload={(f) => { toast(`Export ${f.label}`); setExportOpen(false); }}
+      />
 
       <div className="gridfoot">
         <span>

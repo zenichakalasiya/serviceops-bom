@@ -468,16 +468,41 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   check((await page.locator('.vercard .iconbtn.tip').first().getAttribute('data-tip')) === 'Download BOM',
     'icon buttons need an instant tooltip label');
 
-  // download offers both formats rather than silently picking one
+  /* download opens a dialog with a radio choice, Cancel and Download — the
+     pick and the commit are separate steps, so nothing downloads on open */
   await page.locator('.vercard .iconbtn.tip').first().click();
-  await page.waitForTimeout(300);
-  const formats = await page.locator('.popover button').allInnerTexts();
-  check(formats.length === 2
-    && formats.some((t) => t.includes('CycloneDX'))
-    && formats.some((t) => t.includes('SPDX')),
-    `download menu should offer CycloneDX and SPDX, got ${JSON.stringify(formats)}`);
-  await page.keyboard.press('Escape');
+  await page.waitForTimeout(400);
+  check(await page.locator('.dlg').count() === 1, 'download dialog did not open');
+  const radios = await page.locator('.dlg .radiorow').allInnerTexts();
+  check(radios.length === 2
+    && radios.some((t) => t.includes('CycloneDX'))
+    && radios.some((t) => t.includes('SPDX')),
+    `dialog should offer CycloneDX and SPDX, got ${JSON.stringify(radios)}`);
+  check(await page.locator('.dlg input[type=radio]:checked').count() === 1,
+    'exactly one format must be preselected');
+  check(await page.locator('.dlg .radiorow.on').first().innerText().then((t) => t.includes('CycloneDX')),
+    'the native format should be preselected');
+  await page.screenshot({ path: path.join(OUT, 'bom-09-download.png') });
+
+  // switching the radio moves the selection
+  await page.locator('.dlg input[type=radio]').nth(1).check();
   await page.waitForTimeout(250);
+  check((await page.locator('.dlg .radiorow.on').innerText()).includes('SPDX'),
+    'selecting SPDX did not move the highlight');
+
+  // Cancel closes without committing
+  await page.locator('.dlg .btn-secondary', { hasText: 'Cancel' }).click();
+  await page.waitForTimeout(300);
+  check(await page.locator('.dlg').count() === 0, 'Cancel did not close the dialog');
+
+  // reopening resets to the native format rather than remembering the pick
+  await page.locator('.vercard .iconbtn.tip').first().click();
+  await page.waitForTimeout(350);
+  check((await page.locator('.dlg .radiorow.on').innerText()).includes('CycloneDX'),
+    'the dialog should reopen on the native format');
+  await page.locator('.dlg .btn-primary', { hasText: 'Download' }).click();
+  await page.waitForTimeout(300);
+  check(await page.locator('.dlg').count() === 0, 'Download did not close the dialog');
 
   // compare is available without selecting anything
   const compare = page.locator('.btn-outline', { hasText: 'Compare versions' });
@@ -559,11 +584,14 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   await page.keyboard.press('Escape');
   await page.waitForTimeout(250);
 
-  await page.locator('.splitbtn button').nth(1).click();
-  await page.waitForTimeout(300);
-  check((await page.locator('.popover').innerText()).includes('SPDX'), 'export menu missing SPDX');
+  // Export reuses the same format dialog as the version cards
+  await page.locator('.tools .btn-secondary', { hasText: 'Export' }).click();
+  await page.waitForTimeout(400);
+  check(await page.locator('.dlg').count() === 1, 'export dialog did not open');
+  check((await page.locator('.dlg').innerText()).includes('SPDX'), 'export dialog missing SPDX');
   await page.keyboard.press('Escape');
-  await page.waitForTimeout(250);
+  await page.waitForTimeout(300);
+  check(await page.locator('.dlg').count() === 0, 'Esc should close the export dialog');
 
   await page.locator('table.datagrid tbody tr').first().click();
   await page.waitForTimeout(500);

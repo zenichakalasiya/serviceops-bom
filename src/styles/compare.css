@@ -92,3 +92,29 @@
 .cmp-detail .note{margin:12px 0 0;padding:8px 10px;background:var(--color-surface-sunk);
   border-radius:var(--radius-sm);font-size:12px;color:var(--color-fg-slate);line-height:18px}
 .cmp-foot{margin:20px 0 0;font-size:12px;color:var(--color-fg-dim);text-align:center}
+
+/* ==========================================================================
+   Small confirm dialog (export format picker)
+   ========================================================================== */
+.dlg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:151;
+  width:min(440px,92vw);display:flex;flex-direction:column;background:var(--color-surface);
+  border-radius:var(--radius-lg);box-shadow:var(--shadow-menu);outline:0;overflow:hidden}
+.dlg-head{display:flex;align-items:flex-start;gap:12px;padding:18px 20px 14px}
+.dlg-head h2{font-size:15px;font-weight:600;color:var(--color-fg);line-height:22.5px}
+.dlg-sub{font-size:12px;color:var(--color-fg-muted);margin-top:2px}
+.dlg-head .iconbtn{margin-left:auto}
+.dlg-body{padding:0 20px 4px}
+.dlg-foot{display:flex;justify-content:flex-end;gap:8px;padding:16px 20px 18px}
+
+.radiogroup{display:flex;flex-direction:column;gap:8px}
+.radiorow{display:flex;align-items:flex-start;gap:10px;padding:12px;cursor:pointer;
+  border:1px solid var(--color-line-2);border-radius:var(--radius-md);background:var(--color-surface)}
+.radiorow:hover{background:var(--color-surface-sunk)}
+.radiorow.on{border-color:var(--color-primary);background:var(--color-primary-selected)}
+.radiorow:focus-within{outline:2px solid var(--color-primary);outline-offset:1px}
+.radiorow input[type=radio]{width:16px;height:16px;margin:1px 0 0;accent-color:var(--color-primary);
+  flex:0 0 16px;cursor:pointer}
+.rtext{display:flex;flex-direction:column;gap:2px;min-width:0}
+.rlabel{font-size:13px;font-weight:500;color:var(--color-fg);line-height:19.5px}
+.rhint{font-size:11px;color:var(--color-fg-muted);line-height:16.5px}
+.radiorow.on .rlabel{color:var(--color-primary)}
