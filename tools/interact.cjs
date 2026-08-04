@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Drive every interactive surface of the rebuild and screenshot each state.
- * Fails loudly on console errors or empty panes — a tab that renders nothing
+ * Fails loudly on console errors or empty panes â€” a tab that renders nothing
  * still screenshots fine, so assert content, not absence of crash.
  *
  *   node BOM/capture/interact.js
@@ -9,7 +9,7 @@ const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
 
-/* Drives the running app — start it with `npm run preview` (or `npm run dev`)
+/* Drives the running app â€” start it with `npm run preview` (or `npm run dev`)
    first, or use `npm run test:ui` which does both. */
 const URL = process.env.APP_URL || 'http://localhost:5190/';
 const OUT = path.join(__dirname, 'out', 'interactive');
@@ -41,7 +41,7 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   check(await page.locator('table.datagrid').count() === 1, 'listing grid missing');
 
   // the Tailwind `.grid` utility once hijacked this table's display and threw
-  // away every column width — assert the table is still a table
+  // away every column width â€” assert the table is still a table
   const disp = await page.evaluate(() =>
     getComputedStyle(document.querySelector('table.datagrid')).display);
   check(disp === 'table', `listing table display should be "table", got "${disp}"`);
@@ -161,7 +161,7 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
       .map((s) => {
         const r = s.getBoundingClientRect();
         const host = s.closest('button, label, [class]');
-        return `${host?.className || s.parentElement?.className || '?'} → ` +
+        return `${host?.className || s.parentElement?.className || '?'} â†’ ` +
                `${Math.round(r.width)}x${Math.round(r.height)}`;
       });
   });
@@ -324,7 +324,7 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   check(await page.locator('.dash').count() === 2, 'expected 2 em-dashes in Crypto Assets');
   await page.screenshot({ path: path.join(OUT, 'bom-02-inventory.png') });
 
-  // segmented scope switch — Managed CIs has no supplied row, so it must be empty
+  // segmented scope switch â€” Managed CIs has no supplied row, so it must be empty
   await page.locator('.segmented button', { hasText: 'Managed CIs' }).click();
   await page.waitForTimeout(400);
   check(await page.locator('.gridempty').count() === 1, 'Managed CIs should render the empty state');
@@ -362,12 +362,12 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
     'side panel should mirror Patch Properties');
   await page.screenshot({ path: path.join(OUT, 'bom-03-endpoint.png') });
 
-  // the metadata card and agent banner are gone from the main column …
+  // the metadata card and agent banner are gone from the main column â€¦
   check(await page.locator('.metagrid').count() === 0,
     'the product metadata card should be removed from the main column');
   check(await page.locator('.agentbanner').count() === 0,
     'the agent banner should be removed from the main column');
-  // … and the BOM fields now live inside Other Info, not a separate rail panel
+  // â€¦ and the BOM fields now live inside Other Info, not a separate rail panel
   check(await page.locator('.siderail button[title="BOM Info"]').count() === 0,
     'the BOM Info rail panel should be removed');
   check(await page.locator('.siderail button').count() === 2, 'rail should have 2 panels');
@@ -382,7 +382,7 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   check(sectionTitles.indexOf('BOM Info') < sectionTitles.indexOf('Other Info'),
     'BOM Info should sit above Other Info');
   check(await page.locator('.side .sectionscope').count() === 1,
-    'BOM Info needs a scope line — it is product-scoped inside an endpoint-scoped panel');
+    'BOM Info needs a scope line â€” it is product-scoped inside an endpoint-scoped panel');
 
   // and it collapses independently of Other Info
   await page.locator('.side .section-head').first().click();
@@ -393,7 +393,7 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   await page.waitForTimeout(250);
 
   /* ---- manage scan paths drawer ------------------------------------------ */
-  await page.locator('.scoperow .btn-primary', { hasText: 'Manage scan paths' }).click();
+  await page.locator('.scoperow .btn-secondary', { hasText: 'Manage scan paths' }).click();
   await page.waitForTimeout(600);
   const pathHeads = await page.locator('.pathtable thead th').allInnerTexts();
   check(pathHeads.some((h) => /last scan/i.test(h)), 'scan paths table needs a last-scan column');
@@ -447,11 +447,11 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   // the section is named for the selected BOM type
   /* Two .sectionhead blocks now exist ("Product & scope" and the versions
      one), so this must target the versions heading rather than relying on
-     there being exactly one — a bare locator fails Playwright strict mode. */
+     there being exactly one â€” a bare locator fails Playwright strict mode. */
   const headings = await page.evaluate(() =>
     [...document.querySelectorAll('.pane .sectionhead h3')].map((h) => h.textContent.trim()));
   check(headings.includes('SBOM versions'),
-    `version section should be named for the selected BOM type — got ${JSON.stringify(headings)}`);
+    `version section should be named for the selected BOM type â€” got ${JSON.stringify(headings)}`);
 
   // scan history drawer opens off the interval connector
   await page.locator('.scaninterval').first().click();
@@ -472,7 +472,7 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   check(await page.locator('.vercard .chk').count() === 0,
     'selection checkboxes should be removed from the version cards');
   check(await page.locator('.vercard .ghostx').count() === 0,
-    'the ⋯ overflow should be removed from the version cards');
+    'the â‹¯ overflow should be removed from the version cards');
   check(await page.locator('.vercard.current').count() === 1,
     'exactly one card should be styled as the current version');
   check(await page.locator('.vercard .chip-past').count() === 2,
@@ -489,55 +489,54 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   check((await page.locator('.vercard .iconbtn.tip').first().getAttribute('data-tip')) === 'Download BOM',
     'icon buttons need an instant tooltip label');
 
-  /* download opens a dialog with a radio choice, Cancel and Download — the
-     pick and the commit are separate steps, so nothing downloads on open */
-  await page.locator('.vercard .iconbtn.tip').first().click();
+  /* download opens an ANCHORED menu beside the button, not a centred dialog */
+  const dlBtn = page.locator('.vercard .iconbtn.tip').first();
+  await dlBtn.click();
   await page.waitForTimeout(400);
-  check(await page.locator('.dlg').count() === 1, 'download dialog did not open');
-  // the header alone must answer "what am I downloading?"
-  const dlgTitle = await page.locator('.dlg h2').innerText();
-  check(/SBOM/.test(dlgTitle) && /v3/.test(dlgTitle) && /OS \/ base platform/.test(dlgTitle),
-    `dialog title should name type, version and product — got "${dlgTitle}"`);
-  check(/components/.test(await page.locator('.dlg-sub').innerText()),
-    'dialog subtitle should qualify the artefact (component count, generated date)');
-  const radios = await page.locator('.dlg .radiorow').allInnerTexts();
+  check(await page.locator('.dlmenu').count() === 1, 'download menu did not open');
+  check(await page.locator('.dlg').count() === 0, 'download should not open a centred dialog');
+
+  // anchored: the menu sits near its trigger, not in the middle of the viewport
+  const [btnBox, menuBox] = [await dlBtn.boundingBox(), await page.locator('.dlmenu').boundingBox()];
+  check(!!btnBox && !!menuBox && Math.abs(menuBox.y - (btnBox.y + btnBox.height)) < 40,
+    'the menu should open directly under its trigger');
+
+  check(/components/.test(await page.locator('.dlmenu-sum').innerText()),
+    'the menu should summarise what is being downloaded');
+  const radios = await page.locator('.dlmenu .radiorow').allInnerTexts();
   check(radios.length === 2
     && radios.some((t) => t.includes('CycloneDX'))
     && radios.some((t) => t.includes('SPDX')),
-    `dialog should offer CycloneDX and SPDX, got ${JSON.stringify(radios)}`);
-  check(await page.locator('.dlg input[type=radio]:checked').count() === 1,
-    'exactly one format must be preselected');
-  check(await page.locator('.dlg .radiorow.on').first().innerText().then((t) => t.includes('CycloneDX')),
+    `menu should offer CycloneDX and SPDX, got ${JSON.stringify(radios)}`);
+  check((await page.locator('.dlmenu .radiorow.on').innerText()).includes('CycloneDX'),
     'the native format should be preselected');
   await page.screenshot({ path: path.join(OUT, 'bom-09-download.png') });
 
-  // switching the radio moves the selection
-  await page.locator('.dlg input[type=radio]').nth(1).check();
+  await page.locator('.dlmenu input[type=radio]').nth(1).check();
   await page.waitForTimeout(250);
-  check((await page.locator('.dlg .radiorow.on').innerText()).includes('SPDX'),
+  check((await page.locator('.dlmenu .radiorow.on').innerText()).includes('SPDX'),
     'selecting SPDX did not move the highlight');
 
-  // Cancel closes without committing
-  await page.locator('.dlg .btn-secondary', { hasText: 'Cancel' }).click();
+  await page.locator('.dlmenu .btn-secondary', { hasText: 'Cancel' }).click();
   await page.waitForTimeout(300);
-  check(await page.locator('.dlg').count() === 0, 'Cancel did not close the dialog');
+  check(await page.locator('.dlmenu').count() === 0, 'Cancel did not close the menu');
 
   // reopening resets to the native format rather than remembering the pick
-  await page.locator('.vercard .iconbtn.tip').first().click();
+  await dlBtn.click();
   await page.waitForTimeout(350);
-  check((await page.locator('.dlg .radiorow.on').innerText()).includes('CycloneDX'),
-    'the dialog should reopen on the native format');
-  await page.locator('.dlg .btn-primary', { hasText: 'Download' }).click();
+  check((await page.locator('.dlmenu .radiorow.on').innerText()).includes('CycloneDX'),
+    'the menu should reopen on the native format');
+  await page.locator('.dlmenu .btn-primary', { hasText: 'Download' }).click();
   await page.waitForTimeout(300);
-  check(await page.locator('.dlg').count() === 0, 'Download did not close the dialog');
+  check(await page.locator('.dlmenu').count() === 0, 'Download did not close the menu');
 
   // compare is available without selecting anything
   const compare = page.locator('.btn-outline', { hasText: 'Compare versions' });
   check(await compare.isEnabled(), 'Compare versions should be enabled by default');
 
-  // the scan-paths CTA sits beside the product control, and is prominent
-  const cta = page.locator('.scoperow .btn-primary', { hasText: 'Manage scan paths' });
-  check(await cta.count() === 1, 'Manage scan paths should be a primary CTA inside the scope row');
+  // the scan-paths CTA sits beside the product control, as a secondary outline
+  const cta = page.locator('.scoperow .btn-secondary', { hasText: 'Manage scan paths' });
+  check(await cta.count() === 1, 'Manage scan paths should be a secondary CTA inside the scope row');
   const [selBox, ctaBox] = [await page.locator('.selectbtn').boundingBox(),
     await cta.boundingBox()];
   check(!!selBox && !!ctaBox && ctaBox.x - (selBox.x + selBox.width) < 40,
@@ -588,26 +587,36 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   const paneHeadings = await page.evaluate(() =>
     [...document.querySelectorAll('.pane .sectionhead h3')].map((h) => h.textContent.trim()));
   check(paneHeadings[0] === 'Product & scope',
-    `the scope row needs a "Product & scope" heading above it — headings: ${JSON.stringify(paneHeadings)}`);
+    `the scope row needs a "Product & scope" heading above it â€” headings: ${JSON.stringify(paneHeadings)}`);
 
   // the long type caption is gone; a short helper sits under the product control
   check(await page.locator('.typecaption').count() === 0,
     'the one-liner under the BOM type tabs should be removed');
+  // the helper must say something specific about the selected product
   const help = await page.locator('.scopehelp').innerText();
-  check(help.split(/\s+/).length <= 9,
-    `the product helper should be one glanceable line, got "${help}"`);
+  check(help.split(/\s+/).length <= 14, `the product helper should stay one line, got "${help}"`);
+  check(/rolls up here|Scanned at/.test(help),
+    `the helper should describe the selected product's scope, got "${help}"`);
 
-  // the scan interval is centred between the cards it describes
-  const centred = await page.evaluate(() => {
+  /* The interval sits on a dotted rail joining the cards, vertically centred in
+     the gap — so its top and bottom padding must match. */
+  const rail = await page.evaluate(() => {
     const el = document.querySelector('.scaninterval');
-    const box = el.getBoundingClientRect();
-    const inner = el.querySelector('.txt').getBoundingClientRect();
-    // the text's centre should sit near the row's centre, not at its left edge
-    return Math.abs((inner.left + inner.width / 2) - (box.left + box.width / 2));
+    const s = getComputedStyle(el);
+    const before = getComputedStyle(el, '::before');
+    return {
+      padTop: s.paddingTop, padBottom: s.paddingBottom,
+      dashed: before.borderLeftStyle,
+      textLeft: Math.round(el.querySelector('.txt').getBoundingClientRect().left
+        - el.getBoundingClientRect().left),
+    };
   });
-  check(centred < 60, `scan interval text is not centred (off by ${Math.round(centred)}px)`);
+  check(rail.padTop === rail.padBottom,
+    `interval padding must be equal top and bottom, got ${rail.padTop} / ${rail.padBottom}`);
+  check(rail.dashed === 'dashed', `the dotted rail joining the cards is missing (${rail.dashed})`);
+  check(rail.textLeft < 80, `interval text should sit left on the rail, got ${rail.textLeft}px in`);
 
-  // type switcher keeps its selection when the product changes (spec §2)
+  // type switcher keeps its selection when the product changes (spec Â§2)
   await page.locator('.typeswitch button', { hasText: 'CBOM' }).click();
   await page.waitForTimeout(300);
   await page.locator('.selectbtn').click();
@@ -640,7 +649,7 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   check(await page.locator('.drawer .fsearch').count() === 1,
     'the drawer needs the operator search');
   check(await page.locator('.drawer .filterselect').count() === 0,
-    'filter dropdowns should be gone — the search is the filter');
+    'filter dropdowns should be gone â€” the search is the filter');
   const drawerRows = await page.locator('.drawer table.datagrid tbody tr').count();
   check(drawerRows === 15, `drawer should list the components, got ${drawerRows}`);
 
@@ -649,7 +658,7 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
     [...document.querySelectorAll('.drawer svg')]
       .filter((s) => !s.closest('.donut, .graph, .cmp-bar'))
       .filter((s) => s.getBoundingClientRect().width > 24)
-      .map((s) => `${s.parentElement?.className || '?'} → ${Math.round(s.getBoundingClientRect().width)}px`));
+      .map((s) => `${s.parentElement?.className || '?'} â†’ ${Math.round(s.getBoundingClientRect().width)}px`));
   check(drawerOversized.length === 0, 'oversized icons in drawer: ' + drawerOversized.join(' | '));
 
   // build a clause: field -> operator -> value
@@ -667,17 +676,31 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
     `the operator filter did not narrow the rows (${drawerRows} -> ${filtered})`);
   await page.screenshot({ path: path.join(OUT, 'bom-10-components-drawer.png') });
 
-  // export offers the selection or the whole file
+  /* Export lives in the drawer header, not the footer, and the SELECTION
+     decides the scope â€” there is no "what to export" choice to make. */
+  check(await page.locator('.drawer-actions .btn-primary', { hasText: 'Export' }).count() === 1,
+    'Export should sit in the drawer header');
+  check(await page.locator('.drawer-foot .btn-primary').count() === 0,
+    'Export should not also sit in the footer');
+
+  // nothing selected -> the whole file
+  await page.locator('.drawer-actions .btn-primary', { hasText: 'Export' }).click();
+  await page.waitForTimeout(400);
+  check(await page.locator('.dlmenu').count() === 1, 'export menu did not open');
+  check(await page.locator('.dlmenu .rgroup-legend').count() === 0,
+    'the "what to export" group should be gone â€” the selection decides it');
+  let sum = await page.locator('.dlmenu-sum').innerText();
+  check(/all 15 components/i.test(sum), `with nothing selected it should export everything, got "${sum}"`);
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(300);
+
+  // something selected -> only those rows
   await page.locator('.drawer tbody .chk').first().check();
   await page.waitForTimeout(250);
-  await page.locator('.drawer-foot .btn-primary', { hasText: 'Export' }).click();
-  await page.waitForTimeout(500);
-  check(await page.locator('.dlg').count() === 1, 'export dialog did not open');
-  const groups = await page.locator('.dlg .rgroup-legend').allInnerTexts();
-  check(groups.length === 2, `export should ask scope and format, got ${JSON.stringify(groups)}`);
-  const scopeLabels = await page.locator('.dlg fieldset').first().locator('.rlabel').allInnerTexts();
-  check(scopeLabels.some((t) => /Selected rows/.test(t)) && scopeLabels.some((t) => /Whole file/.test(t)),
-    `export scope should offer selected vs whole file, got ${JSON.stringify(scopeLabels)}`);
+  await page.locator('.drawer-actions .btn-primary', { hasText: 'Export' }).click();
+  await page.waitForTimeout(400);
+  sum = await page.locator('.dlmenu-sum').innerText();
+  check(/1 selected component/i.test(sum), `with a row ticked it should export just that, got "${sum}"`);
   await page.keyboard.press('Escape');
   await page.waitForTimeout(300);
   await page.locator('.drawer-foot .btn-secondary', { hasText: 'Close' }).click();
@@ -698,14 +721,14 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   await page.keyboard.press('Escape');
   await page.waitForTimeout(250);
 
-  // Export reuses the same format dialog as the version cards
-  await page.locator('.tools .btn-secondary', { hasText: 'Export' }).click();
+  // Export reuses the same anchored menu as the version cards
+  await page.locator('.tools .btn-primary', { hasText: 'Export' }).click();
   await page.waitForTimeout(400);
-  check(await page.locator('.dlg').count() === 1, 'export dialog did not open');
-  check((await page.locator('.dlg').innerText()).includes('SPDX'), 'export dialog missing SPDX');
+  check(await page.locator('.dlmenu').count() === 1, 'export menu did not open');
+  check((await page.locator('.dlmenu').innerText()).includes('SPDX'), 'export menu missing SPDX');
   await page.keyboard.press('Escape');
   await page.waitForTimeout(300);
-  check(await page.locator('.dlg').count() === 0, 'Esc should close the export dialog');
+  check(await page.locator('.dlmenu').count() === 0, 'Esc should close the export menu');
 
   await page.locator('table.datagrid tbody tr').first().click();
   await page.waitForTimeout(500);
@@ -722,7 +745,7 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   check((await page.locator('.selectbtn').innerText()).includes('Reporting Service'),
     'returning from components lost the selected product');
 
-  // back, then a plain row click — must also land on BOM
+  // back, then a plain row click â€” must also land on BOM
   await page.locator('.tabstrip .x').click();
   await page.waitForTimeout(600);
   check(await page.locator('table.datagrid').count() === 1, 'back did not return to the inventory');

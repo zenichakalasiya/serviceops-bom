@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import Svg from '../../components/Svg';
 import Popover from '../../components/listing/Popover';
-import { bomMeta, bomTypes, ctaLabel, label, products, versions } from '../../data/bomTab';
+import { bomMeta, bomTypes, ctaLabel, label, products, scanPaths, versions } from '../../data/bomTab';
 import type { BomType } from '../../data/bomTab';
 import { useToast } from '../../lib/toast';
 import ScanHistory from './drawers/ScanHistory';
 import CompareVersions from './CompareVersions';
-import DownloadDialog from './DownloadDialog';
+import DownloadMenu from './DownloadMenu';
 import ComponentsDrawer from './drawers/ComponentsDrawer';
 
 /**
@@ -36,6 +36,7 @@ export default function BomTab({
   const product = products.find((p) => p.id === productId)!;
   const meta = bomMeta[productId]?.[type];
   const count = product.counts[type];
+  const scanPath = scanPaths.find((p) => p.product === product.name)?.path;
 
   /* Compare is always available: it opens on the two most recent versions and
      the range is changed inside the modal, so there is nothing to select first. */
@@ -89,13 +90,16 @@ export default function BomTab({
           </div>
         </div>
 
-        <button className="btn-primary tall" onClick={onManagePaths}>
+        <button className="btn-secondary tall" onClick={onManagePaths}>
           <Svg name="settings" />Manage scan paths
         </button>
       </div>
-      {/* one glanceable line; the full explanation lives in the drawer */}
+      {/* names the actual scanned location for the selected product — a generic
+          sentence told the user nothing they could act on */}
       <p className="scopehelp">
-        Each path is scanned into that product&apos;s own SBOM.
+        {productId === 'os-base'
+          ? <>Everything not claimed by another product on this host rolls up here.</>
+          : <>Scanned at <code>{scanPath ?? '—'}</code> on this host · {count} components.</>}
       </p>
 
       {/* ---- versions ---------------------------------------------------- */}
@@ -143,13 +147,22 @@ export default function BomTab({
                 {/* icon actions use the header's icon-button treatment, with an
                     instant tooltip — the native title attribute has a ~1s delay */}
                 <div className="vcacts">
-                  {/* opens the format dialog — the pick and the commit are
-                      separate because SPDX is a conversion, not the native form */}
-                  <button className="iconbtn tip" data-tip="Download BOM"
-                    aria-label={`Download ${v.label}`} aria-haspopup="dialog"
-                    onClick={() => setDownloadFor(v.id)}>
-                    <Svg name="download" />
-                  </button>
+                  {/* format menu opens beside the button, not centre-screen */}
+                  <div style={{ position: 'relative' }}>
+                    <button className="iconbtn tip" data-tip="Download BOM"
+                      aria-label={`Download ${v.label}`} aria-haspopup="dialog"
+                      onClick={() => setDownloadFor(downloadFor === v.id ? null : v.id)}>
+                      <Svg name="download" />
+                    </button>
+                    <DownloadMenu
+                      open={downloadFor === v.id} onClose={() => setDownloadFor(null)}
+                      summary={`Downloading ${type} ${v.label} — ${meta?.components ?? count} components`}
+                      onDownload={(f) => {
+                        toast(`Download ${type} ${v.label} — ${f.label}`);
+                        setDownloadFor(null);
+                      }}
+                    />
+                  </div>
                   {/* only the current version can be re-scanned — a superseded
                       BOM is a historical record, re-scanning it is meaningless */}
                   {v.current && (
@@ -194,21 +207,6 @@ export default function BomTab({
         productId={productId} type={type} versionId={drawerFor ?? ''}
       />
 
-      {/* the title names the artefact; the subtitle qualifies it, so the header
-          alone answers "what am I about to download?" */}
-      <DownloadDialog
-        open={!!downloadFor}
-        title={downloadFor ? `Download ${type} ${downloadFor} — ${label(product)}` : ''}
-        subtitle={downloadFor
-          ? `${meta?.components ?? count} components · generated ${meta?.generated ?? '—'}`
-            + `${versions.find((v) => v.id === downloadFor)?.current ? ' · current version' : ''}`
-          : undefined}
-        onClose={() => setDownloadFor(null)}
-        onDownload={(f) => {
-          toast(`Download ${type} ${downloadFor} — ${f.label}`);
-          setDownloadFor(null);
-        }}
-      />
 
       <CompareVersions
         open={compareOpen} onClose={() => setCompareOpen(false)}

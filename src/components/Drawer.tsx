@@ -15,7 +15,8 @@ import Svg from './Svg';
  *    not fight its parent for focus.
  */
 export default function Drawer({
-  open, onClose, title, subtitle, width = 760, depth = 0, topmost = true, footer, children,
+  open, onClose, title, subtitle, width = 760, depth = 0, topmost = true,
+  headerActions, footer, children,
 }: {
   open: boolean;
   onClose: () => void;
@@ -25,6 +26,8 @@ export default function Drawer({
   depth?: number;
   /** false when another drawer is stacked above this one */
   topmost?: boolean;
+  /** primary actions, rendered in the header beside the close button */
+  headerActions?: ReactNode;
   footer?: ReactNode;
   children: ReactNode;
 }) {
@@ -69,9 +72,12 @@ export default function Drawer({
             <h2>{title}</h2>
             {subtitle && <div className="drawer-sub">{subtitle}</div>}
           </div>
-          <button className="iconbtn" title="Close" aria-label="Close" onClick={onClose}>
-            <Svg name="x" />
-          </button>
+          <div className="drawer-actions">
+            {headerActions}
+            <button className="iconbtn" title="Close" aria-label="Close" onClick={onClose}>
+              <Svg name="x" />
+            </button>
+          </div>
         </div>
         <div className="drawer-body">{children}</div>
         {footer && <div className="drawer-foot">{footer}</div>}

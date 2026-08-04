@@ -7,7 +7,7 @@ import Pagination from '../../../components/listing/Pagination';
 import { components, label, products } from '../../../data/bomTab';
 import type { BomType, Component, Origin } from '../../../data/bomTab';
 import { useToast } from '../../../lib/toast';
-import DownloadDialog from '../DownloadDialog';
+import DownloadMenu from '../DownloadMenu';
 
 const ORIGIN_CLASS: Record<Origin, string> = {
   Proprietary: 'prop', 'Open-source': 'oss', 'Third-party': 'third',
@@ -68,15 +68,33 @@ export default function ComponentsDrawer({
         open={open} onClose={onClose} width={1040}
         title={`Components — ${label(product)}`}
         subtitle={`${type} ${versionId} · ${rowsAll.length} of ${components.length} shown`}
+        // while the export menu is open it owns Esc, not the drawer
         topmost={!exportOpen}
+        headerActions={
+          <div style={{ position: 'relative' }}>
+            <button className="btn-primary" onClick={() => setExportOpen(!exportOpen)}>
+              <Svg name="download" />Export
+            </button>
+            {/* the selection decides the scope, so the menu only asks format */}
+            <DownloadMenu
+              open={exportOpen} onClose={() => setExportOpen(false)}
+              summary={selected.size
+                ? `Exporting ${selected.size} selected component${selected.size === 1 ? '' : 's'}`
+                : `Exporting all ${components.length} components`}
+              onDownload={(f) => {
+                toast(`Export ${selected.size || components.length} components — ${f.label}`);
+                setExportOpen(false);
+              }}
+            />
+          </div>
+        }
         footer={<>
           <span className="drawer-foot-note">
-            {selected.size > 0 ? `${selected.size} selected` : 'No rows selected'}
+            {selected.size > 0
+              ? `${selected.size} selected — Export will include only these`
+              : 'Nothing selected — Export will include the whole file'}
           </span>
           <button className="btn-secondary" onClick={onClose}>Close</button>
-          <button className="btn-primary" onClick={() => setExportOpen(true)}>
-            <Svg name="download" />Export
-          </button>
         </>}
       >
         <div className="drawer-toolbar">
@@ -136,25 +154,6 @@ export default function ComponentsDrawer({
         <Pagination total={rowsAll.length} page={current} perPage={perPage}
           onPageChange={setPage} onPerPageChange={(n) => { setPerPage(n); setPage(1); }} />
       </Drawer>
-
-      {/* export offers the selection or the whole file, then the format */}
-      <DownloadDialog
-        open={exportOpen}
-        title="Export components"
-        subtitle={`${label(product)} · ${type} ${versionId}`}
-        scopes={[
-          { id: 'selected', label: `Selected rows · ${selected.size}`,
-            hint: selected.size ? 'Only the rows you ticked' : 'Nothing selected yet',
-            disabled: selected.size === 0 },
-          { id: 'all', label: `Whole file · ${components.length}`,
-            hint: 'Every component in this BOM, ignoring the current search' },
-        ]}
-        onClose={() => setExportOpen(false)}
-        onDownload={(f, scope) => {
-          toast(`Export ${scope?.id === 'selected' ? `${selected.size} rows` : 'whole file'} — ${f.label}`);
-          setExportOpen(false);
-        }}
-      />
     </>
   );
 }

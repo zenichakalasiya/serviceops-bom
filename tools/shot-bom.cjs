@@ -35,7 +35,7 @@ fs.mkdirSync(OUT, { recursive: true });
   console.log('active tab     :', await p.locator('.tabbar button.active').innerText());
 
   // manage scan paths drawer, then the stacked add-product drawer
-  await p.locator('.btn-primary', { hasText: 'Manage scan paths' }).click();
+  await p.locator('.scoperow .btn-secondary', { hasText: 'Manage scan paths' }).click();
   await p.waitForTimeout(600);
   await p.screenshot({ path: path.join(OUT, '05-drawer-paths.png') });
   await p.locator('.drawer .btn-primary', { hasText: 'Add product' }).first().click();

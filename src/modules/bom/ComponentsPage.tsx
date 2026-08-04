@@ -5,7 +5,7 @@ import Pagination from '../../components/listing/Pagination';
 import Popover from '../../components/listing/Popover';
 import Svg from '../../components/Svg';
 import ComponentDetail from './drawers/ComponentDetail';
-import DownloadDialog from './DownloadDialog';
+import DownloadMenu from './DownloadMenu';
 import { endpoint } from '../../data/bom';
 import { bomMeta, components, componentsFooterNote, label, products } from '../../data/bomTab';
 import type { BomType, Component, Origin } from '../../data/bomTab';
@@ -124,13 +124,22 @@ export default function ComponentsPage({
               {label(product)} · {type} {versionId} · {meta?.format ?? 'CycloneDX 1.6'}
             </div>
           </div>
-          <div className="tools">
-            {/* same format dialog as the version cards, so export behaves the
-                same wherever it is reached from */}
-            <button className="btn-secondary" aria-haspopup="dialog"
-              onClick={() => setExportOpen(true)}>
+          <div className="tools" style={{ position: 'relative' }}>
+            {/* same anchored menu as everywhere else */}
+            <button className="btn-primary" aria-haspopup="dialog"
+              onClick={() => setExportOpen(!exportOpen)}>
               <Svg name="download" />Export
             </button>
+            <DownloadMenu
+              open={exportOpen} onClose={() => setExportOpen(false)}
+              summary={selected.size
+                ? `Exporting ${selected.size} selected component${selected.size === 1 ? '' : 's'}`
+                : `Exporting all ${total} components`}
+              onDownload={(f) => {
+                toast(`Export ${selected.size || total} components — ${f.label}`);
+                setExportOpen(false);
+              }}
+            />
           </div>
         </div>
       </div>
@@ -194,14 +203,6 @@ export default function ComponentsPage({
       )}
 
       <ComponentDetail component={detail} onClose={() => setDetail(null)} />
-
-      <DownloadDialog
-        open={exportOpen}
-        title="Export components"
-        subtitle={`${label(product)} · ${type} ${versionId} · ${sorted.length} rows`}
-        onClose={() => setExportOpen(false)}
-        onDownload={(f) => { toast(`Export ${f.label}`); setExportOpen(false); }}
-      />
 
       <div className="gridfoot">
         <span>

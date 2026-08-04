@@ -94,6 +94,27 @@
 .cmp-foot{margin:20px 0 0;font-size:12px;color:var(--color-fg-dim);text-align:center}
 
 /* ==========================================================================
+   Export / download format menu — anchored to its trigger, not centred.
+   ========================================================================== */
+.dlmenu{position:absolute;top:calc(100% + 6px);right:0;z-index:130;width:320px;
+  background:var(--color-surface);border:1px solid var(--color-line);
+  border-radius:var(--radius-md);box-shadow:var(--shadow-menu);padding:12px}
+.dlmenu.left{right:auto;left:0}
+.dlmenu-sum{font-size:12px;color:var(--color-fg-slate);margin-bottom:10px;
+  padding-bottom:10px;border-bottom:1px solid var(--color-line)}
+.dlmenu .radiogroup{border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+.dlmenu .radiorow{padding:9px 10px}
+.dlmenu-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+.dlmenu-foot .btn-secondary,.dlmenu-foot .btn-primary{height:32px;padding:0 12px;font-size:12px}
+.dlmenu-foot svg{width:14px;height:14px;flex:0 0 14px}
+
+.drawer-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+.btn-secondary.tall{height:38px;padding:0 16px;font-size:13px}
+.btn-secondary.tall svg{width:16px;height:16px;flex:0 0 16px}
+.scopehelp code{font-family:var(--font-mono);font-size:11px;color:var(--color-fg-slate);
+  background:var(--color-surface-sunk);padding:1px 5px;border-radius:var(--radius-xs)}
+
+/* ==========================================================================
    Small confirm dialog (export format picker)
    ========================================================================== */
 .dlg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:151;

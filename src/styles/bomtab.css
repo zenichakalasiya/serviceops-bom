@@ -65,7 +65,9 @@
   height:18px;padding:0 6px;border-radius:9999px;background:var(--color-surface-tag);
   font-size:11px;font-weight:600;color:var(--color-fg-slate)}
 .sectionhead .right{margin-left:auto}
-.vercards{display:flex;flex-direction:column;gap:10px}
+/* gap:0 — the interval row supplies the spacing itself, with equal padding
+   above and below, so it sits optically centred between the two cards */
+.vercards{display:flex;flex-direction:column;gap:0}
 .vercard{display:flex;align-items:center;gap:14px;padding:14px 16px;
   background:var(--color-surface);border:1px solid var(--color-line);
   border-radius:var(--radius-lg)}
@@ -107,18 +109,26 @@
 
 /* The interval between two versions: what ran, and what it found. Reads as a
    timeline connector rather than a property of either card. */
-/* centred between the two cards it describes, so it reads as the gap rather
-   than as something hanging off the left edge of either card */
-.scaninterval{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
-  padding:10px 0;color:var(--color-fg-muted);font-size:12px;text-align:center}
-.scaninterval .node{flex:0 0 6px;width:6px;height:6px;border-radius:9999px;
-  background:var(--color-line-2)}
+/* The interval sits on a dotted rail that joins one card to the next, with
+   equal padding above and below so it is vertically centred in the gap. */
+.scaninterval{display:flex;align-items:center;gap:10px;width:100%;
+  padding:14px 16px 14px 0;position:relative;text-align:left;
+  color:var(--color-fg-muted);font-size:12px}
+.scaninterval::before{content:"";position:absolute;left:23px;top:0;bottom:0;
+  border-left:1px dashed var(--color-line-2)}
+.scaninterval .node{position:relative;z-index:1;flex:0 0 7px;width:7px;height:7px;
+  margin-left:20px;border-radius:9999px;background:var(--color-surface);
+  border:1px solid var(--color-line-2)}
+.scaninterval .txt{min-width:0}
 .scaninterval .txt b{font-weight:600;color:var(--color-fg-slate)}
-.scaninterval .go{font-weight:500;color:var(--color-primary);opacity:0;transition:opacity .12s}
+.scaninterval .go{margin-left:auto;font-weight:500;color:var(--color-primary);opacity:0;
+  transition:opacity .12s}
 .scaninterval:hover .go,.scaninterval:focus-visible .go{opacity:1}
-.scaninterval:hover .node{background:var(--color-primary)}
+.scaninterval:hover .node{border-color:var(--color-primary);background:var(--color-primary)}
 .scaninterval:focus-visible{outline:2px solid var(--color-primary);outline-offset:-2px;
   border-radius:var(--radius-sm)}
+/* the rail stops at the last node rather than running into empty space */
+.vercards > div:last-child .scaninterval::before{bottom:50%}
 
 .outcome.made{color:var(--color-ok-onsurface);font-weight:500}
 .vercard .scans:hover{text-decoration:underline}
