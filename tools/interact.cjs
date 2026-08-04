@@ -147,16 +147,25 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
      everywhere rather than by eye. */
   await page.locator('.tabbar button', { hasText: /^Endpoint$/ }).click();
   await page.waitForTimeout(450);
+  /* Scoping this to buttons let a 600px search icon through inside a plain
+     div. Check EVERY glyph, exempting only the handful that are meant to be
+     large (donut rings, the supersede graph, the compare proportion bar). */
   const oversized = await page.evaluate(() => {
-    const bad = [];
-    for (const s of document.querySelectorAll('button svg, .subtab svg, .glabel svg')) {
-      const r = s.getBoundingClientRect();
-      if (r.width > 24 || r.height > 24)
-        bad.push(`${s.closest('button,.subtab')?.textContent.trim().slice(0, 22) || '?'} → ${Math.round(r.width)}x${Math.round(r.height)}`);
-    }
-    return bad;
+    const EXEMPT = '.donut, .graph, .cmp-bar';
+    return [...document.querySelectorAll('svg')]
+      .filter((s) => !s.closest(EXEMPT))
+      .filter((s) => {
+        const r = s.getBoundingClientRect();
+        return r.width > 24 || r.height > 24;
+      })
+      .map((s) => {
+        const r = s.getBoundingClientRect();
+        const host = s.closest('button, label, [class]');
+        return `${host?.className || s.parentElement?.className || '?'} → ` +
+               `${Math.round(r.width)}x${Math.round(r.height)}`;
+      });
   });
-  check(oversized.length === 0, 'oversized icons: ' + oversized.join(', '));
+  check(oversized.length === 0, 'oversized icons: ' + oversized.join(' | '));
 
   const tallCtl = await page.evaluate(() => [...document.querySelectorAll('.subtab')]
     .filter(b => b.getBoundingClientRect().height > 40)
@@ -623,8 +632,60 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   await page.locator('.typeswitch button', { hasText: 'SBOM' }).click();
   await page.waitForTimeout(400);
 
-  // components page: column chooser, export menu, row -> component drawer
-  await page.locator('.vercard .viewlink').first().click();
+  /* ---- v2 opens the components DRAWER (v1/v3 keep the full page) --------- */
+  await page.locator('.vercard').nth(1).locator('.viewlink').click();
+  await page.waitForTimeout(700);
+  check(await page.locator('.drawer').count() === 1, 'v2 should open the components drawer');
+  check(await page.locator('.crumb').count() === 0, 'v2 must not navigate to the full page');
+  check(await page.locator('.drawer .fsearch').count() === 1,
+    'the drawer needs the operator search');
+  check(await page.locator('.drawer .filterselect').count() === 0,
+    'filter dropdowns should be gone — the search is the filter');
+  const drawerRows = await page.locator('.drawer table.datagrid tbody tr').count();
+  check(drawerRows === 15, `drawer should list the components, got ${drawerRows}`);
+
+  // the same icon-size guard, run inside the drawer
+  const drawerOversized = await page.evaluate(() =>
+    [...document.querySelectorAll('.drawer svg')]
+      .filter((s) => !s.closest('.donut, .graph, .cmp-bar'))
+      .filter((s) => s.getBoundingClientRect().width > 24)
+      .map((s) => `${s.parentElement?.className || '?'} → ${Math.round(s.getBoundingClientRect().width)}px`));
+  check(drawerOversized.length === 0, 'oversized icons in drawer: ' + drawerOversized.join(' | '));
+
+  // build a clause: field -> operator -> value
+  await page.locator('.drawer .fsearch input').click();
+  await page.waitForTimeout(250);
+  await page.locator('.fsearch-menu button', { hasText: 'Ecosystem' }).click();
+  await page.waitForTimeout(200);
+  await page.locator('.fsearch-menu button', { hasText: 'is' }).first().click();
+  await page.waitForTimeout(200);
+  await page.locator('.fsearch-menu button', { hasText: 'Maven' }).click();
+  await page.waitForTimeout(350);
+  check(await page.locator('.fchip').count() === 1, 'the clause should become a chip');
+  const filtered = await page.locator('.drawer table.datagrid tbody tr').count();
+  check(filtered > 0 && filtered < drawerRows,
+    `the operator filter did not narrow the rows (${drawerRows} -> ${filtered})`);
+  await page.screenshot({ path: path.join(OUT, 'bom-10-components-drawer.png') });
+
+  // export offers the selection or the whole file
+  await page.locator('.drawer tbody .chk').first().check();
+  await page.waitForTimeout(250);
+  await page.locator('.drawer-foot .btn-primary', { hasText: 'Export' }).click();
+  await page.waitForTimeout(500);
+  check(await page.locator('.dlg').count() === 1, 'export dialog did not open');
+  const groups = await page.locator('.dlg .rgroup-legend').allInnerTexts();
+  check(groups.length === 2, `export should ask scope and format, got ${JSON.stringify(groups)}`);
+  const scopeLabels = await page.locator('.dlg fieldset').first().locator('.rlabel').allInnerTexts();
+  check(scopeLabels.some((t) => /Selected rows/.test(t)) && scopeLabels.some((t) => /Whole file/.test(t)),
+    `export scope should offer selected vs whole file, got ${JSON.stringify(scopeLabels)}`);
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(300);
+  await page.locator('.drawer-foot .btn-secondary', { hasText: 'Close' }).click();
+  await page.waitForTimeout(400);
+  check(await page.locator('.drawer').count() === 0, 'the drawer did not close');
+
+  // v3 still opens the full page
+  await page.locator('.vercard').first().locator('.viewlink').click();
   await page.waitForTimeout(700);
   check(await page.locator('.crumb').count() === 1, 'components page missing its breadcrumb');
   await page.locator('.toolbtn[title="Columns"]').click();

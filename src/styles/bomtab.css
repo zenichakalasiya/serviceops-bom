@@ -261,6 +261,49 @@ table.pathtable tr.fresh{background:var(--color-primary-selected)}
 .fieldrow .textinput{width:100%;min-width:0}
 .req{color:var(--color-danger-strong)}
 
+/* ---- field-operator search ---------------------------------------------- */
+.fsearch{position:relative;flex:1;min-width:0}
+.fsearch-box{display:flex;align-items:center;flex-wrap:wrap;gap:6px;min-height:38px;
+  padding:5px 12px;border:1px solid var(--color-line-2);border-radius:var(--radius-sm);
+  background:var(--color-surface);cursor:text}
+.fsearch-box:focus-within{border-color:var(--color-primary)}
+.fsearch-box input{flex:1;min-width:120px;border:0;outline:0;padding:0;background:none;
+  font-size:13px;color:var(--color-fg);line-height:26px}
+.fsearch-box input::placeholder{color:var(--color-fg-dim)}
+/* descendant, NOT direct-child: <Svg> wraps the glyph in a display:contents
+   span, so `.fsearch-box > svg` matches nothing and the icon fills the box */
+.fsearch-box svg{width:16px;height:16px;flex:0 0 16px;color:var(--color-fg-dim)}
+.fchip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 6px 0 9px;
+  border-radius:var(--radius-xs);background:var(--color-primary-selected);
+  color:var(--color-primary);font-size:12px;font-weight:500;white-space:nowrap}
+.fchip.free{background:var(--color-surface-tag);color:var(--color-fg-slate)}
+.fchip button{display:flex;color:currentColor;opacity:.65}
+.fchip button:hover{opacity:1}
+.fchip svg{width:12px;height:12px}
+/* the clause being built, shown inline before the caret */
+.ftoken{font-size:12px;font-weight:500;color:var(--color-fg-slate);white-space:nowrap}
+.ftoken.op{font-family:var(--font-mono);color:var(--color-primary)}
+
+.fsearch-menu{position:absolute;top:calc(100% + 4px);left:0;min-width:260px;max-height:280px;
+  overflow:auto;background:var(--color-surface);border:1px solid var(--color-line);
+  border-radius:var(--radius-md);box-shadow:var(--shadow-menu);padding:4px;z-index:120}
+.fsearch-menu button{display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;
+  border-radius:var(--radius-sm);font-size:13px;color:var(--color-fg);text-align:left;
+  white-space:nowrap}
+.fsearch-menu button:hover{background:var(--color-surface-sunk)}
+
+/* ---- table inside a drawer ------------------------------------------------ */
+.drawer-table{border:1px solid var(--color-line);border-radius:var(--radius-lg);
+  overflow:auto;max-height:calc(100vh - 320px)}
+.drawer-table table.datagrid{table-layout:fixed}
+.drawer-foot-note{margin-right:auto;font-size:12px;color:var(--color-fg-muted);align-self:center}
+.rgroup-legend{padding:0;margin:0 0 8px;font-size:11px;font-weight:600;letter-spacing:.5px;
+  text-transform:uppercase;color:var(--color-fg-muted)}
+.radiogroup{border:0;padding:0;margin:0 0 18px}
+.radiogroup:last-child{margin-bottom:0}
+.radiorow.off{opacity:.5;cursor:not-allowed}
+.radiorow.off input{cursor:not-allowed}
+
 table.scantable{width:100%;border-collapse:collapse}
 table.scantable th{text-align:left;font-size:11px;font-weight:600;letter-spacing:.5px;
   text-transform:uppercase;color:var(--color-fg-muted);padding:0 10px 8px;

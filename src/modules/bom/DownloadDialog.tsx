@@ -5,6 +5,8 @@ export interface DownloadFormat {
   id: string;
   label: string;
   hint: string;
+  /** e.g. "Selected rows" with nothing selected */
+  disabled?: boolean;
 }
 
 /** The two serialisation formats a BOM can be exported as. */
@@ -21,20 +23,29 @@ export const BOM_FORMATS: DownloadFormat[] = [
  * and the commit are separated by an explicit Download.
  */
 export default function DownloadDialog({
-  open, title, subtitle, formats = BOM_FORMATS, onClose, onDownload,
+  open, title, subtitle, formats = BOM_FORMATS, scopes, onClose, onDownload,
 }: {
   open: boolean;
   title: string;
   subtitle?: string;
   formats?: DownloadFormat[];
+  /** optional second choice, e.g. selected rows vs the whole file */
+  scopes?: DownloadFormat[];
   onClose: () => void;
-  onDownload: (format: DownloadFormat) => void;
+  onDownload: (format: DownloadFormat, scope?: DownloadFormat) => void;
 }) {
   const [selected, setSelected] = useState(formats[0].id);
+  const [scope, setScope] = useState(scopes?.[0]?.id ?? '');
   const panel = useRef<HTMLDivElement>(null);
 
   // always reopen on the native format rather than remembering a stale pick
   useEffect(() => { if (open) setSelected(formats[0].id); }, [open, formats]);
+  // default to the first *enabled* scope — "Selected rows" is disabled with an
+  // empty selection, and preselecting it would leave Download doing nothing
+  useEffect(() => {
+    if (!open || !scopes?.length) return;
+    setScope((scopes.find((s) => !s.disabled) ?? scopes[0]).id);
+  }, [open, scopes]);
 
   useEffect(() => {
     if (!open) return;
@@ -57,8 +68,28 @@ export default function DownloadDialog({
 
   const commit = () => {
     const f = formats.find((x) => x.id === selected);
-    if (f) onDownload(f);
+    if (f) onDownload(f, scopes?.find((x) => x.id === scope));
   };
+
+  const group = (
+    legend: string, items: DownloadFormat[], name: string,
+    value: string, set: (v: string) => void,
+  ) => (
+    <fieldset className="radiogroup" aria-label={legend}>
+      <legend className="rgroup-legend">{legend}</legend>
+      {items.map((f) => (
+        <label key={f.id} className={'radiorow' + (value === f.id ? ' on' : '')
+          + (f.disabled ? ' off' : '')}>
+          <input type="radio" name={name} value={f.id} checked={value === f.id}
+            disabled={f.disabled} onChange={() => set(f.id)} />
+          <span className="rtext">
+            <span className="rlabel">{f.label}</span>
+            <span className="rhint">{f.hint}</span>
+          </span>
+        </label>
+      ))}
+    </fieldset>
+  );
 
   return (
     <>
@@ -76,19 +107,8 @@ export default function DownloadDialog({
         </header>
 
         <div className="dlg-body">
-          <div className="radiogroup" role="radiogroup" aria-label="Export format">
-            {formats.map((f) => (
-              <label key={f.id} className={'radiorow' + (selected === f.id ? ' on' : '')}>
-                <input type="radio" name="bom-format" value={f.id}
-                  checked={selected === f.id}
-                  onChange={() => setSelected(f.id)} />
-                <span className="rtext">
-                  <span className="rlabel">{f.label}</span>
-                  <span className="rhint">{f.hint}</span>
-                </span>
-              </label>
-            ))}
-          </div>
+          {scopes?.length ? group('What to export', scopes, 'bom-scope', scope, setScope) : null}
+          {group('Format', formats, 'bom-format', selected, setSelected)}
         </div>
 
         <footer className="dlg-foot">

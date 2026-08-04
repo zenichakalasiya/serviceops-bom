@@ -7,6 +7,7 @@ import { useToast } from '../../lib/toast';
 import ScanHistory from './drawers/ScanHistory';
 import CompareVersions from './CompareVersions';
 import DownloadDialog from './DownloadDialog';
+import ComponentsDrawer from './drawers/ComponentsDrawer';
 
 /**
  * BOM tab body.
@@ -30,6 +31,7 @@ export default function BomTab({
   const [historyFor, setHistoryFor] = useState<string | null>(null);
   const [compareOpen, setCompareOpen] = useState(false);
   const [downloadFor, setDownloadFor] = useState<string | null>(null);
+  const [drawerFor, setDrawerFor] = useState<string | null>(null);
 
   const product = products.find((p) => p.id === productId)!;
   const meta = bomMeta[productId]?.[type];
@@ -157,7 +159,10 @@ export default function BomTab({
                       <Svg name="refresh-cw" />
                     </button>
                   )}
-                  <button className="viewlink" onClick={() => onOpenComponents(v.id)}>
+                  {/* v2 opens the drawer; v1 and v3 keep the full page, so the
+                      two presentations can be compared on the same content */}
+                  <button className="viewlink"
+                    onClick={() => (v.id === 'v2' ? setDrawerFor(v.id) : onOpenComponents(v.id))}>
                     {ctaLabel[type]} · {count}
                   </button>
                 </div>
@@ -183,6 +188,11 @@ export default function BomTab({
       )}
 
       <ScanHistory versionId={historyFor} onClose={() => setHistoryFor(null)} />
+
+      <ComponentsDrawer
+        open={!!drawerFor} onClose={() => setDrawerFor(null)}
+        productId={productId} type={type} versionId={drawerFor ?? ''}
+      />
 
       {/* the title names the artefact; the subtitle qualifies it, so the header
           alone answers "what am I about to download?" */}
