@@ -57,7 +57,10 @@ export default function BomTab({
         {product.name} — one bill of materials per type: software, cryptographic, AI/ML.
       </p>
 
-      {/* ---- scope row: the CTA sits with the control it acts on --------- */}
+      {/* ---- product & scope -------------------------------------------- */}
+      <div className="sectionhead">
+        <h3>Product &amp; scope</h3>
+      </div>
       <div className="scoperow">
         <div>
           <div className="field-label">Product</div>
@@ -110,9 +113,17 @@ export default function BomTab({
             </div>
           </div>
 
+          {/* A version only exists because a scan found a difference. The scan
+              runs therefore belong to the INTERVAL between two versions, not to
+              a version — so they render as the connector under each card,
+              carrying how many ran and how many changed nothing. */}
           <div className="vercards">
-            {versions.map((v) => (
-              <div className={'vercard' + (v.current ? ' current' : '')} key={v.id}>
+            {versions.map((v, i) => {
+              const previous = versions[i + 1];
+              const quiet = Math.max(0, v.scans - 1);
+              return (
+              <div key={v.id}>
+              <div className={'vercard' + (v.current ? ' current' : '')}>
                 <div className="vcmain">
                   <div className="titleline">
                     <span className="vlabel">{v.label}</span>
@@ -121,13 +132,7 @@ export default function BomTab({
                       ? <span className="chip-current">Current</span>
                       : <span className="chip-past">Superseded</span>}
                   </div>
-                  <div className="delta">
-                    {v.delta}
-                    <span className="sep">·</span>
-                    <button className="scans" onClick={() => setHistoryFor(v.id)}>
-                      {v.scans} scans
-                    </button>
-                  </div>
+                  <div className="delta">{v.delta}</div>
                 </div>
 
                 <span className="chip-meta">{meta?.format ?? 'CycloneDX 1.6'}</span>
@@ -152,20 +157,40 @@ export default function BomTab({
                   </button>
                 </div>
               </div>
-            ))}
+
+              <button className="scaninterval" onClick={() => setHistoryFor(v.id)}>
+                <span className="node" aria-hidden="true" />
+                <span className="txt">
+                  {previous
+                    ? <>
+                        <b>{v.scans} scans</b> between {previous.label} and {v.label}
+                        {quiet > 0 && <> · {quiet} found no change</>}
+                      </>
+                    : <><b>{v.scans} scan</b> · initial agent scan, first {type} generated</>}
+                </span>
+                <span className="go">View</span>
+              </button>
+              </div>
+              );
+            })}
           </div>
         </>
       )}
 
       <ScanHistory versionId={historyFor} onClose={() => setHistoryFor(null)} />
 
+      {/* the title names the artefact; the subtitle qualifies it, so the header
+          alone answers "what am I about to download?" */}
       <DownloadDialog
         open={!!downloadFor}
-        title="Download BOM"
-        subtitle={downloadFor ? `${downloadFor} · ${label(product)} · ${type}` : undefined}
+        title={downloadFor ? `Download ${type} ${downloadFor} — ${label(product)}` : ''}
+        subtitle={downloadFor
+          ? `${meta?.components ?? count} components · generated ${meta?.generated ?? '—'}`
+            + `${versions.find((v) => v.id === downloadFor)?.current ? ' · current version' : ''}`
+          : undefined}
         onClose={() => setDownloadFor(null)}
         onDownload={(f) => {
-          toast(`Download ${downloadFor} — ${f.label}`);
+          toast(`Download ${type} ${downloadFor} — ${f.label}`);
           setDownloadFor(null);
         }}
       />

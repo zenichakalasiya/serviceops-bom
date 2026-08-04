@@ -103,10 +103,29 @@
 .vercard .vstamp{font-size:13px;font-weight:600;color:var(--color-fg)}
 .chip-current{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:9999px;
   background:var(--color-primary-subtle);color:var(--color-primary);font-size:11px;font-weight:600}
-.vercard .delta{display:flex;align-items:center;gap:6px;font-size:12px;
-  color:var(--color-fg-muted);margin-top:3px}
-.vercard .delta .sep{color:var(--color-line-2)}
-.vercard .scans{font-size:12px;font-weight:500;color:var(--color-primary)}
+.vercard .delta{font-size:12px;color:var(--color-fg-muted);margin-top:3px}
+
+/* The interval between two versions: what ran, and what it found. Reads as a
+   timeline connector rather than a property of either card. */
+.scaninterval{display:flex;align-items:center;gap:10px;width:100%;padding:8px 16px 8px 0;
+  position:relative;text-align:left;color:var(--color-fg-muted);font-size:12px}
+.scaninterval::before{content:"";position:absolute;left:23px;top:0;bottom:0;width:1px;
+  border-left:1px dashed var(--color-line-2)}
+.scaninterval .node{position:relative;z-index:1;flex:0 0 8px;width:8px;height:8px;
+  margin-left:20px;border-radius:9999px;background:var(--color-surface);
+  border:1px solid var(--color-line-2)}
+.scaninterval .txt{min-width:0}
+.scaninterval .txt b{font-weight:600;color:var(--color-fg-slate)}
+.scaninterval .go{margin-left:auto;font-weight:500;color:var(--color-primary);opacity:0;
+  transition:opacity .12s}
+.scaninterval:hover .go,.scaninterval:focus-visible .go{opacity:1}
+.scaninterval:hover .txt b,.scaninterval:hover .txt{color:var(--color-fg-slate)}
+.scaninterval:focus-visible{outline:2px solid var(--color-primary);outline-offset:-2px;
+  border-radius:var(--radius-sm)}
+/* the last interval terminates the timeline */
+.vercards > div:last-child .scaninterval::before{bottom:50%}
+
+.outcome.made{color:var(--color-ok-onsurface);font-weight:500}
 .vercard .scans:hover{text-decoration:underline}
 .vercard .chips{display:flex;align-items:center;gap:8px}
 .chip-meta{display:inline-flex;align-items:center;height:22px;padding:0 10px;border-radius:9999px;

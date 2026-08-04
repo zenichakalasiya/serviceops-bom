@@ -438,16 +438,25 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   // caption sits below the switcher, and the section is type-aware
   check(await page.locator('.typerow + .typecaption').count() === 1,
     'the caption should sit below the type switcher');
-  check((await page.locator('.sectionhead h3').innerText()) === 'SBOM versions',
-    'version section should be named for the selected BOM type');
+  /* Two .sectionhead blocks now exist ("Product & scope" and the versions
+     one), so this must target the versions heading rather than relying on
+     there being exactly one — a bare locator fails Playwright strict mode. */
+  const headings = await page.evaluate(() =>
+    [...document.querySelectorAll('.pane .sectionhead h3')].map((h) => h.textContent.trim()));
+  check(headings.includes('SBOM versions'),
+    `version section should be named for the selected BOM type — got ${JSON.stringify(headings)}`);
 
-  // scan history drawer off the "N scans" link
-  await page.locator('.vercard .scans').first().click();
+  // scan history drawer opens off the interval connector
+  await page.locator('.scaninterval').first().click();
   await page.waitForTimeout(500);
   check(await page.locator('.drawer').count() === 1, 'scan history drawer did not open');
-  check((await page.locator('.drawer h2').innerText()).startsWith('Scan history'),
-    'wrong drawer opened from the scans link');
+  check((await page.locator('.drawer h2').innerText()) === 'Scans between v2 and v3',
+    'the drawer should be titled by the interval, not the version');
+  check((await page.locator('.drawer-sub').innerText()).includes('produced v3'),
+    'the drawer should say which run produced the version');
   check(await page.locator('.scantable tbody tr').count() === 3, 'scan history should list 3 runs');
+  check(await page.locator('.outcome.made').count() === 1,
+    'exactly one run should be marked as having produced the version');
   await page.screenshot({ path: path.join(OUT, 'bom-04-scan-history.png') });
   await page.keyboard.press('Escape');
   await page.waitForTimeout(350);
@@ -473,6 +482,12 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   await page.locator('.vercard .iconbtn.tip').first().click();
   await page.waitForTimeout(400);
   check(await page.locator('.dlg').count() === 1, 'download dialog did not open');
+  // the header alone must answer "what am I downloading?"
+  const dlgTitle = await page.locator('.dlg h2').innerText();
+  check(/SBOM/.test(dlgTitle) && /v3/.test(dlgTitle) && /OS \/ base platform/.test(dlgTitle),
+    `dialog title should name type, version and product — got "${dlgTitle}"`);
+  check(/components/.test(await page.locator('.dlg-sub').innerText()),
+    'dialog subtitle should qualify the artefact (component count, generated date)');
   const radios = await page.locator('.dlg .radiorow').allInnerTexts();
   check(radios.length === 2
     && radios.some((t) => t.includes('CycloneDX'))
@@ -541,9 +556,27 @@ const PANELS = ['Patch Properties', 'Affected Products', 'File Details', 'Keyboa
   // cosign chips are gone from the version cards
   check(!(await page.locator('.vercards').innerText()).includes('cosign'),
     'cosign chip should be removed from the version cards');
-  // the scan count sits on the delta line, not its own row
-  check(await page.locator('.vercard .delta .scans').count() === 3,
-    'the scans link should sit inside the delta line');
+  /* scans belong to the interval between versions, not to a card */
+  check(await page.locator('.vercard .scans').count() === 0,
+    'scan counts should not live inside the version cards');
+  check(await page.locator('.scaninterval').count() === 3,
+    'each version should be followed by its scan interval');
+  const firstInterval = await page.locator('.scaninterval').first().innerText();
+  check(/3 scans/.test(firstInterval) && /between v2 and v3/.test(firstInterval),
+    `the interval should name both versions, got "${firstInterval.replace(/\n/g, ' ')}"`);
+  check(/found no change/.test(firstInterval),
+    'the interval should say how many scans changed nothing');
+  const lastInterval = await page.locator('.scaninterval').last().innerText();
+  check(/initial agent scan/.test(lastInterval),
+    `the oldest interval should read as the initial scan, got "${lastInterval.replace(/\n/g, ' ')}"`);
+
+  // "Product & scope" heads the scope row.
+  // Read the DOM directly: a locator here would block on visibility if the
+  // heading is scrolled out of the pane, and time out rather than fail loudly.
+  const paneHeadings = await page.evaluate(() =>
+    [...document.querySelectorAll('.pane .sectionhead h3')].map((h) => h.textContent.trim()));
+  check(paneHeadings[0] === 'Product & scope',
+    `the scope row needs a "Product & scope" heading above it — headings: ${JSON.stringify(paneHeadings)}`);
 
   // type switcher keeps its selection when the product changes (spec §2)
   await page.locator('.typeswitch button', { hasText: 'CBOM' }).click();
